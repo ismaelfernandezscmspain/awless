@@ -370,6 +370,10 @@ func New{{ Title $service.Api }}Driver(api {{ $service.Api }}iface.{{ ApiToInter
 	return &{{ Title $service.Api }}Driver{false, logger.DiscardLogger, api}
 }
 
+func (d *{{ Title $service.Api }}Driver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
+}
+
 func (d *{{ Title $service.Api }}Driver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
 	switch strings.Join(lookups, "") {
 	{{ range $, $def := $service.Drivers }}

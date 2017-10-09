@@ -21,6 +21,7 @@ import (
 	"fmt"
 
 	"github.com/wallix/awless/aws/config"
+	"github.com/wallix/awless/aws/spec"
 	"github.com/wallix/awless/cloud"
 	"github.com/wallix/awless/logger"
 	"github.com/wallix/awless/template/driver"
@@ -64,6 +65,11 @@ func Init(conf map[string]interface{}, log *logger.Logger, profileSetterCallback
 	cloud.ServiceRegistry[MonitoringService.Name()] = MonitoringService
 	cloud.ServiceRegistry[CdnService.Name()] = CdnService
 	cloud.ServiceRegistry[CloudformationService.Name()] = CloudformationService
+
+	awsspec.CommandFactory = &awsspec.AWSFactory{
+		Log:  log,
+		Sess: sess,
+	}
 
 	return nil
 }

@@ -25,8 +25,90 @@ import (
 
 var ErrDriverFnNotFound = errors.New("driver function not found")
 
+func DryRun(cmd interface{}, ctx Context, params map[string]interface{}) (interface{}, error) {
+	type I interface {
+		Inject(map[string]interface{}) error
+	}
+	if i, ok := cmd.(I); ok {
+		if err := i.Inject(params); err != nil {
+			return nil, err
+		}
+	}
+
+	type V interface {
+		Validate() error
+	}
+	if i, ok := cmd.(V); ok {
+		if err := i.Validate(); err != nil {
+			return nil, err
+		}
+	}
+
+	var result interface{}
+	type DR interface {
+		DryRun() (interface{}, error)
+	}
+	if i, ok := cmd.(DR); ok {
+		var err error
+		if result, err = i.DryRun(); err != nil {
+			return result, err
+		}
+	} else {
+		return result, errors.New("Command is not a dry runner")
+	}
+
+	return result, nil
+}
+
+func Run(cmd interface{}, ctx Context, params map[string]interface{}) (interface{}, error) {
+	type I interface {
+		Inject(map[string]interface{}) error
+	}
+	if i, ok := cmd.(I); ok {
+		if err := i.Inject(params); err != nil {
+			return nil, err
+		}
+	}
+
+	type V interface {
+		Validate() error
+	}
+	if i, ok := cmd.(V); ok {
+		if err := i.Validate(); err != nil {
+			return nil, err
+		}
+	}
+
+	var result interface{}
+	type R interface {
+		Run() (interface{}, error)
+	}
+	if i, ok := cmd.(R); ok {
+		var err error
+		if result, err = i.Run(); err != nil {
+			return result, err
+		}
+	} else {
+		return result, errors.New("Command is not a runner")
+	}
+
+	type AR interface {
+		AfterRun() error
+	}
+	if i, ok := cmd.(AR); ok {
+		if err := i.AfterRun(); err != nil {
+			return result, err
+		}
+	}
+
+	return result, nil
+}
+
+type LookupFunc func(...string) interface{}
+
 type Driver interface {
 	Lookup(...string) (DriverFn, error)
+	LookupIface(...string) (interface{}, error)
 	SetDryRun(bool)
 	SetLogger(*logger.Logger)
 }
@@ -74,6 +156,19 @@ func (d *MultiDriver) SetLogger(l *logger.Logger) {
 	for _, dr := range d.drivers {
 		dr.SetLogger(l)
 	}
+}
+
+func (d *MultiDriver) LookupIface(lookups ...string) (interface{}, error) {
+	for _, dr := range d.drivers {
+		iface, err := dr.LookupIface(lookups...)
+		if err != nil {
+			return nil, err
+		}
+		if iface != nil {
+			return iface, nil
+		}
+	}
+	return nil, nil
 }
 
 func (d *MultiDriver) Lookup(lookups ...string) (driverFn DriverFn, err error) {

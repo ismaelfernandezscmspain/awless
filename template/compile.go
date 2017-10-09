@@ -1,6 +1,7 @@
 package template
 
 import (
+	"errors"
 	"fmt"
 	"sort"
 	"strings"
@@ -11,7 +12,11 @@ import (
 )
 
 type Env struct {
-	Driver driver.Driver
+	Driver   driver.Driver
+	Lookuper driver.LookupFunc
+	IsDryRun bool
+
+	IsNewRunner bool
 
 	ResolvedVariables map[string]interface{}
 
@@ -28,6 +33,7 @@ func NewEnv() *Env {
 	return &Env{
 		AliasFunc:         nil,
 		MissingHolesFunc:  nil,
+		Lookuper:          func(...string) interface{} { return nil },
 		Log:               logger.DiscardLogger,
 		ResolvedVariables: make(map[string]interface{}),
 		processedFillers:  make(map[string]interface{}),
@@ -71,7 +77,7 @@ type Mode []compileFunc
 var (
 	LenientCompileMode = []compileFunc{
 		resolveAgainstDefinitions,
-		checkInvalidReferenceDeclarations,
+		checkInvalidReferenceDeclarationsPass,
 		resolveHolesPass,
 		resolveMissingHolesPass,
 		resolveAliasPass,
@@ -80,9 +86,25 @@ var (
 
 	NormalCompileMode = append(
 		LenientCompileMode,
-		failOnUnresolvedHoles,
-		failOnUnresolvedAlias,
+		failOnUnresolvedHolesPass,
+		failOnUnresolvedAliasPass,
 	)
+
+	NewRunnerCompileMode = []compileFunc{
+		verifyCommandsDefinedPass,
+		validateCommandsParamsPass,
+		normalizeMissingRequiredParamsAsHolePass,
+		checkInvalidReferenceDeclarationsPass,
+		resolveHolesPass,
+		resolveMissingHolesPass,
+		resolveAliasPass,
+		inlineVariableValuePass,
+		failOnUnresolvedHolesPass,
+		failOnUnresolvedAliasPass,
+		convertParamsPass,
+		validateCommandsPass,
+		injectCommandsPass,
+	}
 )
 
 func Compile(tpl *Template, env *Env, mode ...Mode) (*Template, *Env, error) {
@@ -118,6 +140,164 @@ func (p *multiPass) compile(tpl *Template, env *Env) (newTpl *Template, newEnv *
 	}
 
 	return
+}
+
+func verifyCommandsDefinedPass(tpl *Template, env *Env) (*Template, *Env, error) {
+	if env.Lookuper == nil {
+		return tpl, env, fmt.Errorf("command lookuper is undefined")
+	}
+
+	for _, node := range tpl.CommandNodesIterator() {
+		key := fmt.Sprintf("%s%s", node.Action, node.Entity)
+		cmd := env.Lookuper(key)
+		if cmd == nil {
+			return tpl, env, fmt.Errorf("cannot find command for '%s'", key)
+		}
+	}
+	return tpl, env, nil
+}
+
+func validateCommandsParamsPass(tpl *Template, env *Env) (*Template, *Env, error) {
+	verifyValidParamsOnly := func(node *ast.CommandNode) error {
+		key := fmt.Sprintf("%s%s", node.Action, node.Entity)
+		cmd := env.Lookuper(key)
+		if cmd == nil {
+			return fmt.Errorf("validate: cannot find command for '%s'", key)
+		}
+		type VP interface {
+			ValidateParams([]string) ([]string, error)
+		}
+		if v, ok := cmd.(VP); ok {
+			if _, err := v.ValidateParams(node.Keys()); err != nil {
+				return cmdErr(node, err)
+			}
+		} else {
+			return cmdErr(node, "command does not implement param validation")
+		}
+		return nil
+	}
+
+	err := tpl.visitCommandNodesE(verifyValidParamsOnly)
+	return tpl, env, err
+}
+
+func normalizeMissingRequiredParamsAsHolePass(tpl *Template, env *Env) (*Template, *Env, error) {
+	normalize := func(node *ast.CommandNode) error {
+		key := fmt.Sprintf("%s%s", node.Action, node.Entity)
+		cmd := env.Lookuper(key)
+		if cmd == nil {
+			return fmt.Errorf("normalize: cannot find command for '%s'", key)
+		}
+		type VP interface {
+			ValidateParams([]string) ([]string, error)
+		}
+		if v, ok := cmd.(VP); ok {
+			missing, err := v.ValidateParams(node.Keys())
+			if err != nil {
+				return cmdErr(node, err)
+			}
+			for _, e := range missing {
+				normalized := fmt.Sprintf("%s.%s", node.Entity, e)
+				node.Params[e] = ast.NewHoleValue(normalized)
+			}
+		} else {
+			return cmdErr(node, "command does not implement param normalization")
+		}
+		return nil
+	}
+
+	err := tpl.visitCommandNodesE(normalize)
+	return tpl, env, err
+}
+
+func convertParamsPass(tpl *Template, env *Env) (*Template, *Env, error) {
+	convert := func(node *ast.CommandNode) error {
+		key := fmt.Sprintf("%s%s", node.Action, node.Entity)
+		cmd := env.Lookuper(key)
+		if cmd == nil {
+			return fmt.Errorf("convert: cannot find command for '%s'", key)
+		}
+
+		type C interface {
+			ConvertParams() ([]string, func(values map[string]interface{}) (map[string]interface{}, error))
+		}
+		if v, ok := cmd.(C); ok {
+			keys, convFunc := v.ConvertParams()
+			values := make(map[string]interface{})
+			params := node.ToDriverParams()
+			for _, k := range keys {
+				if vv, ok := params[k]; ok {
+					values[k] = vv
+				}
+			}
+			converted, err := convFunc(values)
+			if err != nil {
+				return cmdErr(node, err)
+			}
+			for _, k := range keys {
+				delete(node.Params, k)
+			}
+			for k, v := range converted {
+				node.Params[k] = ast.NewInterfaceValue(v)
+			}
+		}
+		return nil
+	}
+	tpl.visitCommandNodesE(convert)
+	return tpl, env, nil
+}
+
+func validateCommandsPass(tpl *Template, env *Env) (*Template, *Env, error) {
+	var errs []error
+
+	collectValidationErrs := func(node *ast.CommandNode) error {
+		key := fmt.Sprintf("%s%s", node.Action, node.Entity)
+		cmd := env.Lookuper(key)
+		if cmd == nil {
+			return fmt.Errorf("validate: cannot find command for '%s'", key)
+		}
+		type V interface {
+			ValidateCommand(map[string]interface{}, []string) []error
+		}
+		if v, ok := cmd.(V); ok {
+			var refsKey []string
+			for k, p := range node.Params {
+				if ref, isRef := p.(ast.WithRefs); isRef && len(ref.GetRefs()) > 0 {
+					refsKey = append(refsKey, k)
+				}
+			}
+			for _, validErr := range v.ValidateCommand(node.ToDriverParams(), refsKey) {
+				errs = append(errs, fmt.Errorf("%s %s: %s", node.Action, node.Entity, validErr.Error()))
+			}
+		}
+		return nil
+	}
+	tpl.visitCommandNodesE(collectValidationErrs)
+	switch len(errs) {
+	case 0:
+		return tpl, env, nil
+	case 1:
+		return tpl, env, fmt.Errorf("validation error: %s", errs[0])
+	default:
+		var errsSrings []string
+		for _, err := range errs {
+			if err != nil {
+				errsSrings = append(errsSrings, err.Error())
+			}
+		}
+		return tpl, env, fmt.Errorf("validation errors:\n\t- %s", strings.Join(errsSrings, "\n\t- "))
+	}
+}
+
+func injectCommandsPass(tpl *Template, env *Env) (*Template, *Env, error) {
+	for _, node := range tpl.CommandNodesIterator() {
+		key := fmt.Sprintf("%s%s", node.Action, node.Entity)
+		node.Command = env.Lookuper(key).(ast.Command)
+		if node.Command == nil {
+			return tpl, env, fmt.Errorf("inject: cannot find command for '%s'", key)
+		}
+	}
+	return tpl, env, nil
 }
 
 func resolveAgainstDefinitions(tpl *Template, env *Env) (*Template, *Env, error) {
@@ -175,7 +355,7 @@ func resolveAgainstDefinitions(tpl *Template, env *Env) (*Template, *Env, error)
 	return tpl, env, nil
 }
 
-func checkInvalidReferenceDeclarations(tpl *Template, env *Env) (*Template, *Env, error) {
+func checkInvalidReferenceDeclarationsPass(tpl *Template, env *Env) (*Template, *Env, error) {
 	usedRefs := make(map[string]struct{})
 
 	for _, withRef := range tpl.WithRefsIterator() {
@@ -329,7 +509,7 @@ func resolveAliasPass(tpl *Template, env *Env) (*Template, *Env, error) {
 	return tpl, env, nil
 }
 
-func failOnUnresolvedHoles(tpl *Template, env *Env) (*Template, *Env, error) {
+func failOnUnresolvedHolesPass(tpl *Template, env *Env) (*Template, *Env, error) {
 	var unresolved []string
 	tpl.visitHoles(func(withHole ast.WithHoles) {
 		for _, hole := range withHole.GetHoles() {
@@ -344,7 +524,7 @@ func failOnUnresolvedHoles(tpl *Template, env *Env) (*Template, *Env, error) {
 	return tpl, env, nil
 }
 
-func failOnUnresolvedAlias(tpl *Template, env *Env) (*Template, *Env, error) {
+func failOnUnresolvedAliasPass(tpl *Template, env *Env) (*Template, *Env, error) {
 	var unresolved []string
 
 	visitAliases := func(withAlias ast.WithAlias) {
@@ -383,4 +563,24 @@ func foundIn(key string, slice []string) (found bool) {
 		}
 	}
 	return
+}
+
+func cmdErr(cmd *ast.CommandNode, i interface{}, a ...interface{}) error {
+	var prefix string
+	if cmd != nil {
+		prefix = fmt.Sprintf("%s %s: ", cmd.Action, cmd.Entity)
+	}
+	var msg string
+	switch ii := i.(type) {
+	case nil:
+		return nil
+	case string:
+		msg = ii
+	case error:
+		msg = ii.Error()
+	}
+	if len(a) == 0 {
+		return errors.New(prefix + msg)
+	}
+	return fmt.Errorf("%s"+msg, append([]interface{}{prefix}, a...)...)
 }

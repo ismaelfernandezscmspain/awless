@@ -1,6 +1,8 @@
 package template
 
 import (
+	"errors"
+	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -166,6 +168,146 @@ create loadbalancer name=mylb subnets=subnet-1, subnet-2
 	}
 }
 
+type mockCommand struct{ id string }
+
+func (c *mockCommand) ValidateCommand(map[string]interface{}, []string) []error {
+	return []error{errors.New(c.id)}
+}
+func (c *mockCommand) Run(ctx, params map[string]interface{}) (interface{}, error)    { return nil, nil }
+func (c *mockCommand) DryRun(ctx, params map[string]interface{}) (interface{}, error) { return nil, nil }
+func (c *mockCommand) ValidateParams(p []string) ([]string, error) {
+	switch c.id {
+	case "1", "2":
+		return []string{c.id}, nil
+	case "3":
+		return []string{c.id}, errors.New("unexpected")
+	}
+	panic("wooot")
+}
+
+func (c *mockCommand) ConvertParams() ([]string, func(values map[string]interface{}) (map[string]interface{}, error)) {
+	return []string{"param1", "param2"},
+		func(values map[string]interface{}) (map[string]interface{}, error) {
+			_, hasParam1 := values["param1"]
+			_, hasParam2 := values["param2"]
+			if hasParam1 && hasParam2 {
+				return map[string]interface{}{"new": fmt.Sprint(values["param1"], values["param2"])}, nil
+			}
+			return values, nil
+		}
+}
+
+func TestCommandsPasses(t *testing.T) {
+	cmd1, cmd2, cmd3 := &mockCommand{"1"}, &mockCommand{"2"}, &mockCommand{"3"}
+	var count int
+	env := NewEnv()
+	env.Lookuper = func(...string) interface{} {
+		count++
+		switch count {
+		case 1:
+			return cmd1
+		case 2:
+			return cmd2
+		case 3:
+			return cmd3
+		default:
+			panic("whaat")
+		}
+	}
+
+	t.Run("verify commands exist", func(t *testing.T) {
+		tpl := MustParse("create instance\nsub = create subnet\ncreate instance")
+		count = 0
+		_, _, err := verifyCommandsDefinedPass(tpl, env)
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	t.Run("convert params", func(t *testing.T) {
+		tpl := MustParse("create instance\nsub = create subnet param1=anything param2=other\ncreate instance param1=anything")
+		count = 0
+		compiled, _, err := convertParamsPass(tpl, env)
+		if err != nil {
+			t.Fatal(err)
+		}
+		exp := map[string]interface{}{"new": "anythingother"}
+		if got, want := compiled.CommandNodesIterator()[1].ToDriverParams(), exp; !reflect.DeepEqual(got, want) {
+			t.Fatalf("got %#v, want %#v", got, want)
+		}
+		exp = map[string]interface{}{"param1": "anything"}
+		if got, want := compiled.CommandNodesIterator()[2].ToDriverParams(), exp; !reflect.DeepEqual(got, want) {
+			t.Fatalf("got %#v, want %#v", got, want)
+		}
+	})
+
+	t.Run("validate commands params", func(t *testing.T) {
+		tpl := MustParse("create instance\nsub = create subnet\ncreate instance")
+		count = 0
+		_, _, err := validateCommandsParamsPass(tpl, env)
+		if err == nil {
+			t.Fatal("expected err got none")
+		}
+		if got, want := err.Error(), "unexpected"; !strings.Contains(got, want) {
+			t.Fatalf("%s should contain %s", got, want)
+		}
+	})
+
+	t.Run("normalize missing required params as hole", func(t *testing.T) {
+		tpl := MustParse("create instance\nsub = create subnet")
+		count = 0
+		compiled, _, err := normalizeMissingRequiredParamsAsHolePass(tpl, env)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		for i, cmd := range compiled.CommandNodesIterator() {
+			if got, want := len(cmd.GetHoles()), 1; got != want {
+				t.Fatalf("%d. got %d, want %d", i+1, got, want)
+			}
+			if got, want := cmd.GetHoles()[0], fmt.Sprintf("%s.%d", cmd.Entity, i+1); got != want {
+				t.Fatalf("%d. got %s, want %s", i+1, got, want)
+			}
+		}
+	})
+
+	t.Run("validate commands", func(t *testing.T) {
+		tpl := MustParse("create instance\nsub = create subnet\ncreate instance")
+		count = 0
+		_, _, err := validateCommandsPass(tpl, env)
+		if err == nil {
+			t.Fatal("expected err got none")
+		}
+
+		checkContainsAll(t, err.Error(), "123")
+	})
+
+	t.Run("inject command", func(t *testing.T) {
+		count = 0
+		tpl := MustParse("create instance\nsub = create subnet\ncreate instance")
+
+		compiled, _, err := injectCommandsPass(tpl, env)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		cmds := compiled.CommandNodesIterator()
+
+		sameObject := func(got, want interface{}) bool {
+			return reflect.ValueOf(got).Pointer() == reflect.ValueOf(want).Pointer()
+		}
+		if got, want := cmds[0].Command, cmd1; !sameObject(got, want) {
+			t.Fatalf("different object: got %#v, want %#v", got, want)
+		}
+		if got, want := cmds[1].Command, cmd2; !sameObject(got, want) {
+			t.Fatalf("different object: got %#v, want %#v", got, want)
+		}
+		if got, want := cmds[2].Command, cmd3; !sameObject(got, want) {
+			t.Fatalf("different object: got %#v, want %#v", got, want)
+		}
+	})
+}
+
 func TestExternallyProvidedParams(t *testing.T) {
 	tcases := []struct {
 		template            string
@@ -302,7 +444,7 @@ func TestBailOnUnresolvedAliasOrHoles(t *testing.T) {
 
 	for i, tcase := range tcases {
 		tpl := MustParse(tcase.tpl)
-		_, _, err := failOnUnresolvedAlias(tpl, env)
+		_, _, err := failOnUnresolvedAliasPass(tpl, env)
 		if err == nil && tcase.expAliasErr != "" {
 			t.Fatalf("%d: unresolved aliases: got nil error, expect '%s'", i+1, tcase.expAliasErr)
 		} else if err != nil && tcase.expAliasErr == "" {
@@ -311,7 +453,7 @@ func TestBailOnUnresolvedAliasOrHoles(t *testing.T) {
 			t.Fatalf("%d: unresolved aliases: got '%s', want '%s'", i+1, got.Error(), want)
 		}
 
-		_, _, err = failOnUnresolvedHoles(tpl, env)
+		_, _, err = failOnUnresolvedHolesPass(tpl, env)
 		if err == nil && tcase.expHolesErr != "" {
 			t.Fatalf("%d: unresolved holes: got nil error, expect '%s'", i+1, tcase.expHolesErr)
 		} else if err != nil && tcase.expHolesErr == "" {
@@ -340,7 +482,7 @@ func TestCheckInvalidReferencesDeclarationPass(t *testing.T) {
 	}
 
 	for i, tcase := range tcases {
-		_, _, err := checkInvalidReferenceDeclarations(MustParse(tcase.tpl), env)
+		_, _, err := checkInvalidReferenceDeclarationsPass(MustParse(tcase.tpl), env)
 		if tcase.expErr == "" && err != nil {
 			t.Fatalf("%d: %v", i+1, err)
 		}
@@ -502,6 +644,26 @@ func TestResolveHolesPass(t *testing.T) {
 	assertCmdParams(t, tpl, map[string]interface{}{"type": "t2.micro", "count": 3})
 }
 
+func TestCmdErr(t *testing.T) {
+	tcases := []struct {
+		cmd    *ast.CommandNode
+		err    interface{}
+		ifaces []interface{}
+		expErr error
+	}{
+		{&ast.CommandNode{Action: "create", Entity: "instance"}, nil, nil, nil},
+		{&ast.CommandNode{Action: "create", Entity: "instance"}, "my error", nil, errors.New("create instance: my error")},
+		{&ast.CommandNode{Action: "create", Entity: "instance"}, errors.New("my error"), nil, errors.New("create instance: my error")},
+		{nil, "my error", nil, errors.New("my error")},
+		{&ast.CommandNode{Action: "create", Entity: "instance"}, "my error with %s %d", []interface{}{"Donald", 1}, errors.New("create instance: my error with Donald 1")},
+	}
+	for i, tcase := range tcases {
+		if got, want := cmdErr(tcase.cmd, tcase.err, tcase.ifaces...), tcase.expErr; !reflect.DeepEqual(got, want) {
+			t.Fatalf("%d: got %#v, want %#v", i+1, got, want)
+		}
+	}
+}
+
 type params map[string]interface{}
 type holes map[string][]string
 type refs map[string][]string
@@ -564,6 +726,14 @@ func assertCmdAliases(t *testing.T, tpl *Template, exp ...aliases) {
 		}
 		if got, want := aliases(r), exp[i]; !reflect.DeepEqual(got, want) {
 			t.Fatalf("refs: cmd %d: \ngot\n%v\n\nwant\n%v\n", i+1, got, want)
+		}
+	}
+}
+
+func checkContainsAll(t *testing.T, s, chars string) {
+	for _, e := range chars {
+		if !strings.ContainsRune(s, e) {
+			t.Fatalf("%s does not contain '%q'", s, e)
 		}
 	}
 }

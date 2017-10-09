@@ -41,12 +41,10 @@ import (
 	"github.com/wallix/awless/aws/services"
 	"github.com/wallix/awless/cloud"
 	"github.com/wallix/awless/config"
-	"github.com/wallix/awless/database"
 	"github.com/wallix/awless/graph"
 	"github.com/wallix/awless/logger"
 	"github.com/wallix/awless/sync"
 	"github.com/wallix/awless/template"
-	"github.com/wallix/awless/template/driver"
 )
 
 var (
@@ -121,7 +119,7 @@ var runCmd = &cobra.Command{
 			Source:   templ.String(),
 		}
 
-		exitOn(runTemplate(tplExec, config.Defaults, extraParams))
+		exitOn(NewRunner(tplExec.Template, tplExec.Message, tplExec.Path, config.Defaults, extraParams).Run())
 
 		return nil
 	},
@@ -200,132 +198,6 @@ func (l *onceLoader) mustLoad() *graph.Graph {
 
 var allGraphsOnce = &onceLoader{}
 
-func runTemplate(tplExec *template.TemplateExecution, fillers ...map[string]interface{}) error {
-	env := template.NewEnv()
-	env.Log = logger.DefaultLogger
-	env.AddFillers(fillers...)
-	env.DefLookupFunc = awsdriver.AWSLookupDefinitions
-	env.AliasFunc = resolveAliasFunc
-	env.MissingHolesFunc = missingHolesStdinFunc()
-
-	if len(env.Fillers) > 0 {
-		logger.ExtraVerbosef("default/given holes fillers: %s", sprintProcessedParams(env.Fillers))
-	}
-
-	var err error
-	tplExec.Template, env, err = template.Compile(tplExec.Template, env)
-	exitOn(err)
-
-	tplExec.Fillers = env.GetProcessedFillers()
-
-	validateTemplate(tplExec.Template)
-
-	var drivers []driver.Driver
-	for _, s := range cloud.ServiceRegistry {
-		drivers = append(drivers, s.Drivers()...)
-	}
-	awsDriver := driver.NewMultiDriver(drivers...)
-	awsDriver.SetLogger(logger.DefaultLogger)
-	env.Driver = awsDriver
-
-	logger.Info("Dry running template ...")
-	if err = tplExec.Template.DryRun(env); err != nil {
-		switch t := err.(type) {
-		case *template.Errors:
-			errs, _ := t.Errors()
-			for _, e := range errs {
-				logger.Errorf(e.Error())
-			}
-		}
-		exitOn(errors.New("Dry run failed"))
-	}
-
-	fmt.Printf("%s\n", renderGreenFn(tplExec.Template))
-
-	var yesorno string
-	if forceGlobalFlag {
-		yesorno = "y"
-	} else {
-		fmt.Println()
-		if isSchedulingMode() {
-			fmt.Print("Confirm scheduling? (y/n): ")
-		} else {
-			fmt.Print("Confirm? (y/n): ")
-		}
-		_, err = fmt.Scanln(&yesorno)
-		exitOn(err)
-	}
-
-	if strings.TrimSpace(yesorno) == "y" {
-		me, err := awsservices.AccessService.(*awsservices.Access).GetIdentity()
-		if err != nil {
-			logger.Warningf("cannot resolve template author identity: %s", err)
-		} else {
-			tplExec.Author = me.ResourcePath
-			logger.ExtraVerbosef("resolved template author: %s", tplExec.Author)
-		}
-
-		if isSchedulingMode() {
-			exitOn(scheduleTemplate(tplExec.Template, scheduleRunInFlag, scheduleRevertInFlag))
-			return nil
-		}
-		tplExec.Template, err = tplExec.Template.Run(env)
-		if err != nil {
-			logger.Errorf("Running template error: %s", err)
-		}
-
-		newDefaultTemplatePrinter(os.Stdout).print(tplExec)
-
-		if tplExec.Message == "" {
-			if tplExec.IsOneLiner() {
-				tplExec.SetMessage(fmt.Sprintf("Run %s", tplExec.Template))
-			} else if path := tplExec.Path; path != "" {
-				stats := tplExec.Stats()
-				if stats.KOCount > 0 {
-					tplExec.SetMessage(fmt.Sprintf("Run %d/%d commands from %s", stats.OKCount, stats.CmdCount, path))
-				} else {
-					tplExec.SetMessage(fmt.Sprintf("Run %d commands from %s", stats.OKCount, path))
-				}
-			}
-		}
-
-		if err = database.Execute(func(db *database.DB) error {
-			return db.AddTemplate(tplExec)
-		}); err != nil {
-			logger.Errorf("Cannot save executed template in awless logs: %s", err)
-		}
-
-		if template.IsRevertible(tplExec.Template) {
-			fmt.Println()
-			logger.Infof("Revert this template with `awless revert %s -r %s -p %s`", tplExec.Template.ID, config.GetAWSRegion(), config.GetAWSProfile())
-		}
-
-		runSyncFor(tplExec)
-	}
-
-	if tplExec.Stats().KOCount > 0 {
-		os.Exit(1)
-	}
-
-	return nil
-}
-
-func validateTemplate(tpl *template.Template) {
-	unicityRule := &template.UniqueNameValidator{LookupGraph: func(key string) (*graph.Graph, bool) {
-		g := sync.LoadLocalGraphForService(awsservices.ServicePerResourceType[key], config.GetAWSRegion())
-		return g, true
-	}}
-
-	errs := tpl.Validate(unicityRule, &template.ParamIsSetValidator{Action: "create", Entity: "instance", Param: "keypair", WarningMessage: "This instance has no access keypair. You might not be able to connect to it. Use `awless create instance keypair=my-keypair ...`"})
-
-	if len(errs) > 0 {
-		for _, err := range errs {
-			logger.Warning(err)
-		}
-		fmt.Fprintln(os.Stderr)
-	}
-}
-
 func createDriverCommands(action string, entities []string) *cobra.Command {
 	actionCmd := &cobra.Command{
 		Use:               fmt.Sprintf("%s ENTITY [param=value ...]", action),
@@ -360,7 +232,7 @@ func createDriverCommands(action string, entities []string) *cobra.Command {
 				Source:   templ.String(),
 			}
 
-			exitOn(runTemplate(tplExec, config.Defaults))
+			exitOn(NewRunner(tplExec.Template, tplExec.Message, tplExec.Path).Run())
 			return nil
 		},
 	}
@@ -387,7 +259,7 @@ func createDriverCommands(action string, entities []string) *cobra.Command {
 					Source:   templ.String(),
 				}
 
-				exitOn(runTemplate(tplExec, config.Defaults))
+				exitOn(NewRunner(tplExec.Template, tplExec.Message, tplExec.Path, config.Defaults).Run())
 				return nil
 			}
 		}
@@ -658,7 +530,7 @@ func isCSV(s string) bool {
 func scheduleTemplate(t *template.Template, runIn, revertIn string) error {
 	schedClient, err := client.New(config.GetSchedulerURL())
 	if err != nil {
-		return fmt.Errorf("Cannot connect to scheduler: %s", err)
+		return fmt.Errorf("cannot connect to scheduler: %s", err)
 	}
 	logger.Verbosef("sending template to scheduler %s", schedClient.ServiceURL)
 
@@ -668,7 +540,7 @@ func scheduleTemplate(t *template.Template, runIn, revertIn string) error {
 		RevertIn: revertIn,
 		Template: t.String(),
 	}); err != nil {
-		return fmt.Errorf("Cannot schedule template: %s", err)
+		return fmt.Errorf("cannot schedule template: %s", err)
 	}
 
 	logger.Info("template scheduled successfully")

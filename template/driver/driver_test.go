@@ -105,3 +105,6 @@ func (d *mockDriver) SetLogger(l *logger.Logger) { d.logger = l }
 func (d *mockDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
 	return d.lookupFn(lookups...)
 }
+func (d *mockDriver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
+}

@@ -54,6 +54,10 @@ func NewEc2Driver(api ec2iface.EC2API) driver.Driver {
 	return &Ec2Driver{false, logger.DiscardLogger, api}
 }
 
+func (d *Ec2Driver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
+}
+
 func (d *Ec2Driver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
 	switch strings.Join(lookups, "") {
 
@@ -410,6 +414,10 @@ func NewElbv2Driver(api elbv2iface.ELBV2API) driver.Driver {
 	return &Elbv2Driver{false, logger.DiscardLogger, api}
 }
 
+func (d *Elbv2Driver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
+}
+
 func (d *Elbv2Driver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
 	switch strings.Join(lookups, "") {
 
@@ -490,6 +498,10 @@ func NewAutoscalingDriver(api autoscalingiface.AutoScalingAPI) driver.Driver {
 	return &AutoscalingDriver{false, logger.DiscardLogger, api}
 }
 
+func (d *AutoscalingDriver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
+}
+
 func (d *AutoscalingDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
 	switch strings.Join(lookups, "") {
 
@@ -558,6 +570,10 @@ func NewRdsDriver(api rdsiface.RDSAPI) driver.Driver {
 	return &RdsDriver{false, logger.DiscardLogger, api}
 }
 
+func (d *RdsDriver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
+}
+
 func (d *RdsDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
 	switch strings.Join(lookups, "") {
 
@@ -608,6 +624,10 @@ func NewEcrDriver(api ecriface.ECRAPI) driver.Driver {
 	return &EcrDriver{false, logger.DiscardLogger, api}
 }
 
+func (d *EcrDriver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
+}
+
 func (d *EcrDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
 	switch strings.Join(lookups, "") {
 
@@ -644,6 +664,10 @@ func (d *EcsDriver) SetDryRun(dry bool)         { d.dryRun = dry }
 func (d *EcsDriver) SetLogger(l *logger.Logger) { d.logger = l }
 func NewEcsDriver(api ecsiface.ECSAPI) driver.Driver {
 	return &EcsDriver{false, logger.DiscardLogger, api}
+}
+
+func (d *EcsDriver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
 }
 
 func (d *EcsDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
@@ -714,6 +738,10 @@ func NewAcmDriver(api acmiface.ACMAPI) driver.Driver {
 	return &AcmDriver{false, logger.DiscardLogger, api}
 }
 
+func (d *AcmDriver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
+}
+
 func (d *AcmDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
 	switch strings.Join(lookups, "") {
 
@@ -752,6 +780,10 @@ func NewStsDriver(api stsiface.STSAPI) driver.Driver {
 	return &StsDriver{false, logger.DiscardLogger, api}
 }
 
+func (d *StsDriver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
+}
+
 func (d *StsDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
 	switch strings.Join(lookups, "") {
 
@@ -770,6 +802,10 @@ func (d *IamDriver) SetDryRun(dry bool)         { d.dryRun = dry }
 func (d *IamDriver) SetLogger(l *logger.Logger) { d.logger = l }
 func NewIamDriver(api iamiface.IAMAPI) driver.Driver {
 	return &IamDriver{false, logger.DiscardLogger, api}
+}
+
+func (d *IamDriver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
 }
 
 func (d *IamDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
@@ -948,6 +984,10 @@ func NewS3Driver(api s3iface.S3API) driver.Driver {
 	return &S3Driver{false, logger.DiscardLogger, api}
 }
 
+func (d *S3Driver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
+}
+
 func (d *S3Driver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
 	switch strings.Join(lookups, "") {
 
@@ -1004,6 +1044,10 @@ func NewSnsDriver(api snsiface.SNSAPI) driver.Driver {
 	return &SnsDriver{false, logger.DiscardLogger, api}
 }
 
+func (d *SnsDriver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
+}
+
 func (d *SnsDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
 	switch strings.Join(lookups, "") {
 
@@ -1048,6 +1092,10 @@ func NewSqsDriver(api sqsiface.SQSAPI) driver.Driver {
 	return &SqsDriver{false, logger.DiscardLogger, api}
 }
 
+func (d *SqsDriver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
+}
+
 func (d *SqsDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
 	switch strings.Join(lookups, "") {
 
@@ -1078,6 +1126,10 @@ func (d *Route53Driver) SetDryRun(dry bool)         { d.dryRun = dry }
 func (d *Route53Driver) SetLogger(l *logger.Logger) { d.logger = l }
 func NewRoute53Driver(api route53iface.Route53API) driver.Driver {
 	return &Route53Driver{false, logger.DiscardLogger, api}
+}
+
+func (d *Route53Driver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
 }
 
 func (d *Route53Driver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
@@ -1130,6 +1182,10 @@ func NewLambdaDriver(api lambdaiface.LambdaAPI) driver.Driver {
 	return &LambdaDriver{false, logger.DiscardLogger, api}
 }
 
+func (d *LambdaDriver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
+}
+
 func (d *LambdaDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
 	switch strings.Join(lookups, "") {
 
@@ -1160,6 +1216,10 @@ func (d *CloudwatchDriver) SetDryRun(dry bool)         { d.dryRun = dry }
 func (d *CloudwatchDriver) SetLogger(l *logger.Logger) { d.logger = l }
 func NewCloudwatchDriver(api cloudwatchiface.CloudWatchAPI) driver.Driver {
 	return &CloudwatchDriver{false, logger.DiscardLogger, api}
+}
+
+func (d *CloudwatchDriver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
 }
 
 func (d *CloudwatchDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
@@ -1218,6 +1278,10 @@ func NewCloudfrontDriver(api cloudfrontiface.CloudFrontAPI) driver.Driver {
 	return &CloudfrontDriver{false, logger.DiscardLogger, api}
 }
 
+func (d *CloudfrontDriver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
+}
+
 func (d *CloudfrontDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
 	switch strings.Join(lookups, "") {
 
@@ -1262,6 +1326,10 @@ func NewCloudformationDriver(api cloudformationiface.CloudFormationAPI) driver.D
 	return &CloudformationDriver{false, logger.DiscardLogger, api}
 }
 
+func (d *CloudformationDriver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
+}
+
 func (d *CloudformationDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
 	switch strings.Join(lookups, "") {
 
@@ -1298,6 +1366,10 @@ func (d *ApplicationautoscalingDriver) SetDryRun(dry bool)         { d.dryRun = 
 func (d *ApplicationautoscalingDriver) SetLogger(l *logger.Logger) { d.logger = l }
 func NewApplicationautoscalingDriver(api applicationautoscalingiface.ApplicationAutoScalingAPI) driver.Driver {
 	return &ApplicationautoscalingDriver{false, logger.DiscardLogger, api}
+}
+
+func (d *ApplicationautoscalingDriver) LookupIface(lookups ...string) (interface{}, error) {
+	return nil, nil
 }
 
 func (d *ApplicationautoscalingDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
