@@ -3,13 +3,13 @@ package parameters
 import (
 	"fmt"
 
-	"github.com/wallix/awless/aws/driver"
+	"github.com/wallix/awless/aws/spec"
 	"github.com/wallix/awless/template"
 )
 
 func Fuzz(data []byte) int {
 	var ok bool
-	for _, def := range awsdriver.AWSTemplatesDefinitions {
+	for _, def := range awsspec.AWSTemplatesDefinitions {
 		env := template.NewEnv()
 		fillers := make(map[string]interface{})
 		for _, param := range def.Required() {

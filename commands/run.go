@@ -37,8 +37,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/wallix/awless-scheduler/client"
 	"github.com/wallix/awless/aws/doc"
-	"github.com/wallix/awless/aws/driver"
 	"github.com/wallix/awless/aws/services"
+	"github.com/wallix/awless/aws/spec"
 	"github.com/wallix/awless/cloud"
 	"github.com/wallix/awless/config"
 	"github.com/wallix/awless/graph"
@@ -62,13 +62,13 @@ func init() {
 	runCmd.Flags().StringVarP(&runLogMessage, "message", "m", "", "Add a message for this template execution to be persisted in your logs")
 
 	var actions []string
-	for a := range awsdriver.DriverSupportedActions() {
+	for a := range awsspec.DriverSupportedActions {
 		actions = append(actions, a)
 	}
 	sort.Strings(actions)
 
 	for _, action := range actions {
-		entities := awsdriver.DriverSupportedActions()[action]
+		entities := awsspec.DriverSupportedActions[action]
 		sort.Strings(entities)
 		cmd := createDriverCommands(action, entities)
 		cmd.PersistentFlags().StringVar(&scheduleRunInFlag, "run-in", "", "Postpone the execution of this command")
@@ -218,7 +218,7 @@ func createDriverCommands(action string, entities []string) *cobra.Command {
 				return invalidEntityErr
 			}
 
-			templDef, ok := awsdriver.AWSLookupDefinitions(fmt.Sprintf("%s%s", action, resources[0].Type()))
+			templDef, ok := awsspec.AWSLookupDefinitions(fmt.Sprintf("%s%s", action, resources[0].Type()))
 			if !ok {
 				return invalidEntityErr
 			}
@@ -238,7 +238,7 @@ func createDriverCommands(action string, entities []string) *cobra.Command {
 	}
 
 	for _, entity := range entities {
-		templDef, ok := awsdriver.AWSLookupDefinitions(fmt.Sprintf("%s%s", action, entity))
+		templDef, ok := awsspec.AWSLookupDefinitions(fmt.Sprintf("%s%s", action, entity))
 		if !ok {
 			exitOn(errors.New("command unsupported on inline mode"))
 		}
@@ -264,7 +264,7 @@ func createDriverCommands(action string, entities []string) *cobra.Command {
 			}
 		}
 		var apiStr string
-		if api, ok := awsdriver.APIPerTemplateDefName[templDef.Name()]; ok {
+		if api, ok := awsspec.APIPerTemplateDefName[templDef.Name()]; ok {
 			apiStr = fmt.Sprint(strings.ToUpper(api) + " ")
 		}
 
@@ -323,7 +323,7 @@ func runSyncFor(tplExec *template.TemplateExecution) {
 		return
 	}
 
-	defs := tplExec.Template.UniqueDefinitions(awsdriver.AWSLookupDefinitions)
+	defs := tplExec.Template.UniqueDefinitions(awsspec.AWSLookupDefinitions)
 
 	services := awsservices.GetCloudServicesForAPIs(defs.Map(
 		func(d template.Definition) string { return d.Api },

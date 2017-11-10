@@ -28,6 +28,8 @@ import (
 	"strings"
 	"text/template"
 
+	"sort"
+
 	"github.com/wallix/awless/gen/aws"
 )
 
@@ -78,11 +80,36 @@ func generateNewDrivers() {
 	if err := ioutil.WriteFile(filepath.Join(SPEC_DIR, "gen_inits.go"), buff.Bytes(), 0666); err != nil {
 		panic(err)
 	}
+
+	templ, err = template.New("templates_definitions").Funcs(
+		template.FuncMap{
+			"BuildSupportedActions": BuildSupportedActions,
+		},
+	).Parse(cmdsDefinitions)
+	if err != nil {
+		panic(err)
+	}
+
+	buff.Reset()
+	err = templ.Execute(&buff, finder.result)
+	if err != nil {
+		panic(err)
+	}
+
+	if err := ioutil.WriteFile(filepath.Join(SPEC_DIR, "gen_cmds_defs.go"), buff.Bytes(), 0666); err != nil {
+		panic(err)
+	}
 }
 
 type cmdData struct {
 	Action, Entity, API, Call, Input, Output string
+	Params                                   []templateParam
 	HasDryRun                                bool
+}
+
+type templateParam struct {
+	Name       string
+	IsRequired bool
 }
 
 type findStructs struct {
@@ -95,30 +122,34 @@ func (v *findStructs) Visit(node ast.Node) (w ast.Visitor) {
 	}
 	if typ, ok := node.(*ast.TypeSpec); ok {
 		if s, isStruct := typ.Type.(*ast.StructType); isStruct {
+			var cmd *cmdData
+			var params []templateParam
 			for _, f := range s.Fields.List {
 				if tag := f.Tag; tag != nil && strings.Contains(tag.Value, "awsAPI") {
-					key := typ.Name.Name
-					v.result[key] = extractTag(tag.Value)
-					break
+					extractedCmd := extractCmdData(tag.Value)
+					cmd = &extractedCmd
+					continue
 				}
+				if tag := f.Tag; tag != nil && strings.Contains(tag.Value, "templateName") {
+					params = append(params, extractParam(tag.Value))
+				}
+			}
+			if cmd != nil {
+				if len(params) > 0 {
+					sort.Slice(params, func(i, j int) bool {
+						return params[i].Name < params[j].Name
+					})
+					cmd.Params = params
+				}
+				v.result[typ.Name.Name] = *cmd
 			}
 		}
 	}
 	return v
 }
 
-func extractTag(s string) (t cmdData) {
-	splits := strings.Split(s[1:len(s)-1], " ")
-	tags := make(map[string]string)
-	for _, e := range splits {
-		el := strings.Split(e, ":")
-		if len(el) > 1 {
-			if len(el[1]) < 2 || el[1][0] != '"' || el[1][len(el[1])-1] != '"' {
-				panic(fmt.Sprintf("malformed tag: '%s':'%s'", el[0], el[1]))
-			}
-			tags[el[0]] = el[1][1 : len(el[1])-1]
-		}
-	}
+func extractCmdData(s string) (t cmdData) {
+	tags := extractTags(s)
 	if v, ok := tags["action"]; ok {
 		t.Action = v
 	}
@@ -141,6 +172,45 @@ func extractTag(s string) (t cmdData) {
 		t.HasDryRun = true
 	}
 	return
+}
+
+func extractParam(s string) (p templateParam) {
+	tags := extractTags(s)
+	if v, ok := tags["templateName"]; ok {
+		p.Name = v
+	}
+	if _, ok := tags["required"]; ok {
+		p.IsRequired = true
+	}
+	return
+}
+
+func BuildSupportedActions(cmds map[string]cmdData) map[string][]string {
+	supportedActions := make(map[string][]string)
+	for _, cmd := range cmds {
+		supportedActions[cmd.Action] = append(supportedActions[cmd.Action], cmd.Entity)
+	}
+	for _, entities := range supportedActions {
+		sort.Slice(entities, func(i, j int) bool {
+			return entities[i] < entities[j]
+		})
+	}
+	return supportedActions
+}
+
+func extractTags(s string) map[string]string {
+	splits := strings.Split(s[1:len(s)-1], " ")
+	tags := make(map[string]string)
+	for _, e := range splits {
+		el := strings.Split(e, ":")
+		if len(el) > 1 {
+			if len(el[1]) < 2 || el[1][0] != '"' || el[1][len(el[1])-1] != '"' {
+				panic(fmt.Sprintf("malformed tag: '%s':'%s'", el[0], el[1]))
+			}
+			tags[el[0]] = el[1][1 : len(el[1])-1]
+		}
+	}
+	return tags
 }
 
 const cmdRuns = `/* Copyright 2017 WALLIX
@@ -319,4 +389,55 @@ var (
 	_ command = &{{ $cmdName }}{}
 	{{- end }}
 )
+`
+
+const cmdsDefinitions = `/* Copyright 2017 WALLIX
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+// DO NOT EDIT
+// This file was automatically generated with go generate
+package awsspec
+
+import (
+	"github.com/wallix/awless/template"
+)
+
+
+var APIPerTemplateDefName = map[string]string {
+{{- range $, $cmd := . }}
+  "{{ $cmd.Action }}{{ $cmd.Entity }}": "{{ $cmd.API }}",
+{{- end }}
+}
+
+var AWSTemplatesDefinitions = map[string]template.Definition{
+{{- range $, $cmd := . }}
+	"{{ $cmd.Action }}{{ $cmd.Entity }}": template.Definition{
+			Action: "{{ $cmd.Action }}",
+			Entity: "{{ $cmd.Entity }}",
+			Api: "{{ $cmd.API }}",
+			RequiredParams: []string{ {{- range $param := $cmd.Params }}{{ if $param.IsRequired }}"{{ $param.Name }}", {{- end}}{{- end}} },
+			ExtraParams: []string{ {{- range $param := $cmd.Params }}{{ if not $param.IsRequired }}"{{ $param.Name }}", {{- end}}{{- end}} },
+		},
+{{- end }}
+}
+
+var DriverSupportedActions = map[string][]string{
+	{{- range $action, $entities := BuildSupportedActions . }}
+		"{{ $action }}" : []string{ {{- range $entity := $entities }}"{{ $entity }}", {{- end}} },
+	{{- end }}
+}
+
+
 `

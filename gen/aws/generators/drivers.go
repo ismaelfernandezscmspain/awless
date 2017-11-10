@@ -26,23 +26,6 @@ import (
 	"github.com/wallix/awless/gen/aws"
 )
 
-func generateTemplateTemplates() {
-	templ, err := template.New("templates_definitions").Parse(templateDefinitions)
-	if err != nil {
-		panic(err)
-	}
-
-	var buff bytes.Buffer
-	err = templ.Execute(&buff, aws.DriversDefs)
-	if err != nil {
-		panic(err)
-	}
-
-	if err := ioutil.WriteFile(filepath.Join(DRIVERS_DIR, "gen_template_defs.go"), buff.Bytes(), 0666); err != nil {
-		panic(err)
-	}
-}
-
 func generateDriverFuncs() {
 	templ, err := template.New("funcs").Funcs(template.FuncMap{
 		"Title": strings.Title,
@@ -82,63 +65,6 @@ func generateDriverTypes() {
 		panic(err)
 	}
 }
-
-const templateDefinitions = `/* Copyright 2017 WALLIX
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
-// DO NOT EDIT
-// This file was automatically generated with go generate
-package awsdriver
-
-import (
-	"github.com/wallix/awless/template"
-)
-
-
-var APIPerTemplateDefName = map[string]string {
-{{- range $, $service := . }}
-  {{- range $, $def := $service.Drivers }}
-  "{{ $def.Action }}{{ $def.Entity }}": "{{ $service.Api }}",
-  {{- end }}
-{{- end }}
-}
-
-var AWSTemplatesDefinitions = map[string]template.Definition{
-{{- range $, $service := . }}
-{{- range $index, $def := $service.Drivers }}
-	"{{ $def.Action }}{{ $def.Entity }}": template.Definition{
-			Action: "{{ $def.Action }}",
-			Entity: "{{ $def.Entity }}",
-			Api: "{{ $service.Api }}",
-			RequiredParams: []string{ {{- range $key := $def.RequiredKeys }}"{{ $key }}", {{- end}} },
-			ExtraParams: []string{ {{- range $key := $def.ExtraKeys }}"{{ $key }}", {{- end}} },
-		},
-{{- end }}
-{{- end }}
-}
-
-func DriverSupportedActions() map[string][]string { 
-	supported := make(map[string][]string)
-{{- range $, $service := . }}
-{{- range $index, $def := $service.Drivers }}
-	supported["{{ $def.Action }}"] = append(supported["{{ $def.Action }}"], "{{ $def.Entity }}")
-{{- end }}
-{{- end }}
-	return supported
-}
-`
 
 const driversTempl = `/* Copyright 2017 WALLIX
 
