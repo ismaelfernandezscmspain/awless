@@ -8,19 +8,53 @@ import (
 
 func TestCertificate(t *testing.T) {
 	t.Run("create", func(t *testing.T) {
-		Template("create certificate domains=test1.com,subdomain.test2.com validation-domains=test1.com,test2.com").
-			Mock(&acmMock{
-				RequestCertificateFunc: func(param0 *acm.RequestCertificateInput) (*acm.RequestCertificateOutput, error) {
-					return &acm.RequestCertificateOutput{CertificateArn: String("arn:my:new:certificate")}, nil
+		tcases := []struct {
+			template            string
+			expCertificateInput *acm.RequestCertificateInput
+		}{
+			{
+				template: "create certificate domains=my.domain.1,my.domain.2,my.domain.3 validation-domains=domain.1,2",
+				expCertificateInput: &acm.RequestCertificateInput{
+					DomainName:              String("my.domain.1"),
+					SubjectAlternativeNames: []*string{String("my.domain.2"), String("my.domain.3")},
+					DomainValidationOptions: []*acm.DomainValidationOption{
+						{DomainName: String("my.domain.1"), ValidationDomain: String("domain.1")},
+						{DomainName: String("my.domain.2"), ValidationDomain: String("2")},
+					},
 				},
-			}).ExpectInput("RequestCertificate", &acm.RequestCertificateInput{
-			DomainName:              String("test1.com"),
-			SubjectAlternativeNames: []*string{String("subdomain.test2.com")},
-			DomainValidationOptions: []*acm.DomainValidationOption{
-				{DomainName: String("test1.com"), ValidationDomain: String("test1.com")},
-				{DomainName: String("subdomain.test2.com"), ValidationDomain: String("test2.com")},
 			},
-		}).ExpectCommandResult("arn:my:new:certificate").ExpectCalls("RequestCertificate").Run(t)
+			{
+				template: "create certificate domains=my.domain.1,my.domain.2,my.domain.3 validation-domains=my.domain.1",
+				expCertificateInput: &acm.RequestCertificateInput{
+					DomainName:              String("my.domain.1"),
+					SubjectAlternativeNames: []*string{String("my.domain.2"), String("my.domain.3")},
+					DomainValidationOptions: []*acm.DomainValidationOption{
+						{DomainName: String("my.domain.1"), ValidationDomain: String("my.domain.1")},
+					},
+				},
+			},
+			{
+				template: "create certificate domains=my.domain.1,my.domain.2 validation-domains=domain.1,domain.2",
+				expCertificateInput: &acm.RequestCertificateInput{
+					DomainName:              String("my.domain.1"),
+					SubjectAlternativeNames: []*string{String("my.domain.2")},
+					DomainValidationOptions: []*acm.DomainValidationOption{
+						{DomainName: String("my.domain.1"), ValidationDomain: String("domain.1")},
+						{DomainName: String("my.domain.2"), ValidationDomain: String("domain.2")},
+					},
+				},
+			},
+		}
+
+		for _, tcase := range tcases {
+
+			Template(tcase.template).
+				Mock(&acmMock{
+					RequestCertificateFunc: func(param0 *acm.RequestCertificateInput) (*acm.RequestCertificateOutput, error) {
+						return &acm.RequestCertificateOutput{CertificateArn: String("arn:my:new:certificate")}, nil
+					},
+				}).ExpectInput("RequestCertificate", tcase.expCertificateInput).ExpectCommandResult("arn:my:new:certificate").ExpectCalls("RequestCertificate").Run(t)
+		}
 	})
 
 	t.Run("delete", func(t *testing.T) {
