@@ -16,6 +16,11 @@ limitations under the License.
 package awsspec
 
 import (
+	"errors"
+	"os"
+
+	"strings"
+
 	"github.com/aws/aws-sdk-go/service/cloudformation"
 	"github.com/aws/aws-sdk-go/service/cloudformation/cloudformationiface"
 	"github.com/wallix/awless/logger"
@@ -40,6 +45,13 @@ type CreateStack struct {
 
 func (cmd *CreateStack) ValidateParams(params []string) ([]string, error) {
 	return validateParams(cmd, params)
+}
+
+func (cmd *CreateStack) ValidateTemplateFile() error {
+	if _, err := os.Stat(StringValue(cmd.TemplateFile)); err != nil {
+		return errors.New(strings.TrimLeft(err.Error(), "stat "))
+	}
+	return nil
 }
 
 func (cmd *CreateStack) ExtractResult(i interface{}) string {

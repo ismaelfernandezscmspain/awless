@@ -30,7 +30,7 @@ func TestBucket(t *testing.T) {
 			ACL:    String("public-read"),
 		}).ExpectCalls("PutBucketAcl").Run(t)
 
-		Template("update bucket name=my-bucket-to-update public-website=true redirect-hostname='http://myhostname.com' index-suffix='index.go' enforce-https=true").
+		Template("update bucket name=my-bucket-to-update public-website=true redirect-hostname='http://myhostname.com' enforce-https=true").
 			Mock(&s3Mock{
 				PutBucketWebsiteFunc: func(param0 *s3.PutBucketWebsiteInput) (*s3.PutBucketWebsiteOutput, error) {
 					return nil, nil
@@ -38,8 +38,19 @@ func TestBucket(t *testing.T) {
 			}).ExpectInput("PutBucketWebsite", &s3.PutBucketWebsiteInput{
 			Bucket: String("my-bucket-to-update"),
 			WebsiteConfiguration: &s3.WebsiteConfiguration{
-				IndexDocument:         &s3.IndexDocument{Suffix: String("index.go")},
 				RedirectAllRequestsTo: &s3.RedirectAllRequestsTo{HostName: String("http://myhostname.com"), Protocol: String("https")},
+			},
+		}).ExpectCalls("PutBucketWebsite").Run(t)
+
+		Template("update bucket name=my-bucket-to-update public-website=true index-suffix='index.go'").
+			Mock(&s3Mock{
+				PutBucketWebsiteFunc: func(param0 *s3.PutBucketWebsiteInput) (*s3.PutBucketWebsiteOutput, error) {
+					return nil, nil
+				},
+			}).ExpectInput("PutBucketWebsite", &s3.PutBucketWebsiteInput{
+			Bucket: String("my-bucket-to-update"),
+			WebsiteConfiguration: &s3.WebsiteConfiguration{
+				IndexDocument: &s3.IndexDocument{Suffix: String("index.go")},
 			},
 		}).ExpectCalls("PutBucketWebsite").Run(t)
 

@@ -24,7 +24,7 @@ func TestScalingGroup(t *testing.T) {
 				NewInstancesProtectedFromScaleIn: Bool(true),
 				VPCZoneIdentifier:                String("sub_1,sub_2"),
 				TargetGroupARNs:                  []*string{String("tg_1"), String("tg_2")},
-			}).ExpectCalls("CreateAutoScalingGroup").Run(t)
+			}).ExpectCommandResult("new-autoscaling").ExpectCalls("CreateAutoScalingGroup").Run(t)
 	})
 
 	t.Run("update", func(t *testing.T) {

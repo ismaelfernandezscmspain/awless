@@ -45,6 +45,10 @@ func (cmd *CreateScalinggroup) ValidateParams(params []string) ([]string, error)
 	return validateParams(cmd, params)
 }
 
+func (cmd *CreateScalinggroup) ExtractResult(i interface{}) string {
+	return StringValue(cmd.Name)
+}
+
 type UpdateScalinggroup struct {
 	_                      string `action:"update" entity:"scalinggroup" awsAPI:"autoscaling" awsCall:"UpdateAutoScalingGroup" awsInput:"autoscaling.UpdateAutoScalingGroupInput" awsOutput:"autoscaling.UpdateAutoScalingGroupOutput"`
 	logger                 *logger.Logger
