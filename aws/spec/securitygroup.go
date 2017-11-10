@@ -72,16 +72,10 @@ func (cmd *UpdateSecuritygroup) ValidateCIDR() error {
 }
 
 func (cmd *UpdateSecuritygroup) ValidateInbound() error {
-	if cmd.Inbound == nil {
-		return nil
-	}
 	return NewEnumValidator("authorize", "revoke").Validate(cmd.Inbound)
 }
 
 func (cmd *UpdateSecuritygroup) ValidateOutbound() error {
-	if cmd.Outbound == nil {
-		return nil
-	}
 	return NewEnumValidator("authorize", "revoke").Validate(cmd.Outbound)
 }
 
@@ -213,7 +207,6 @@ func (cmd *AttachSecuritygroup) ValidateParams(params []string) ([]string, error
 }
 
 func (cmd *AttachSecuritygroup) ManualRun(ctx map[string]interface{}) (interface{}, error) {
-	start := time.Now()
 	groups, err := fetchInstanceSecurityGroups(cmd.api, StringValue(cmd.Instance))
 	if err != nil {
 		return nil, fmt.Errorf("fetching securitygroups for instance %s: %s", StringValue(cmd.Instance), err)
@@ -229,9 +222,7 @@ func (cmd *AttachSecuritygroup) ManualRun(ctx map[string]interface{}) (interface
 		},
 		desc: "attach securitygroup",
 	}
-	_, err = call.execute(&ec2.ModifyInstanceAttributeInput{})
-	cmd.logger.ExtraVerbosef("ec2.ModifyInstanceAttribute call took %s", time.Since(start))
-	return nil, err
+	return call.execute(&ec2.ModifyInstanceAttributeInput{})
 }
 
 type DetachSecuritygroup struct {
@@ -247,7 +238,6 @@ func (cmd *DetachSecuritygroup) ValidateParams(params []string) ([]string, error
 }
 
 func (cmd *DetachSecuritygroup) ManualRun(ctx map[string]interface{}) (interface{}, error) {
-	start := time.Now()
 	groups, err := fetchInstanceSecurityGroups(cmd.api, StringValue(cmd.Instance))
 	if err != nil {
 		return nil, fmt.Errorf("fetching securitygroups for instance %s: %s", StringValue(cmd.Instance), err)
@@ -266,9 +256,7 @@ func (cmd *DetachSecuritygroup) ManualRun(ctx map[string]interface{}) (interface
 		},
 		desc: "attach securitygroup",
 	}
-	_, err = call.execute(&ec2.ModifyInstanceAttributeInput{})
-	cmd.logger.ExtraVerbosef("ec2.ModifyInstanceAttribute call took %s", time.Since(start))
-	return nil, err
+	return call.execute(&ec2.ModifyInstanceAttributeInput{})
 }
 
 func (cmd *UpdateSecuritygroup) buildIpPermissions() ([]*ec2.IpPermission, error) {

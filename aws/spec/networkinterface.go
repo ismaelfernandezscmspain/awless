@@ -148,7 +148,7 @@ func (cmd *DetachNetworkinterface) ManualRun(ctx map[string]interface{}) (interf
 			return nil, err
 		}
 	} else {
-		return nil, errors.New("dry run: detach networkinterface: either required 'attachment' or ('instance' and 'id')")
+		return nil, errors.New("detach networkinterface: either required 'attachment' or ('instance' and 'id')")
 	}
 
 	if cmd.Force != nil {
@@ -158,12 +158,9 @@ func (cmd *DetachNetworkinterface) ManualRun(ctx map[string]interface{}) (interf
 	}
 
 	start := time.Now()
-	if _, err := cmd.api.DetachNetworkInterface(input); err != nil {
-		return nil, err
-	}
+	output, err := cmd.api.DetachNetworkInterface(input)
 	cmd.logger.ExtraVerbosef("ec2.DetachNetworkInterface call took %s", time.Since(start))
-	return nil, nil
-
+	return output, err
 }
 
 type CheckNetworkinterface struct {

@@ -25,14 +25,12 @@ func TestTag(t *testing.T) {
 
 	t.Run("delete", func(t *testing.T) {
 		Template("delete tag key=MyKey resource=any-resource-id").Mock(&ec2Mock{
-			DeleteTagsRequestFunc: func(input *ec2.DeleteTagsInput) (req *request.Request, output *ec2.DeleteTagsOutput) {
-				output = &ec2.DeleteTagsOutput{}
-				req = request.New(aws.Config{}, metadata.ClientInfo{}, request.Handlers{}, nil, &request.Operation{}, input, output)
-				return
+			DeleteTagsFunc: func(input *ec2.DeleteTagsInput) (*ec2.DeleteTagsOutput, error) {
+				return nil, nil
 			}}).
-			ExpectInput("DeleteTagsRequest", &ec2.DeleteTagsInput{
+			ExpectInput("DeleteTags", &ec2.DeleteTagsInput{
 				Resources: []*string{String("any-resource-id")},
 				Tags:      []*ec2.Tag{{Key: String("MyKey")}},
-			}).ExpectCalls("DeleteTagsRequest").Run(t)
+			}).ExpectCalls("DeleteTags").Run(t)
 	})
 }

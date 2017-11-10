@@ -18,8 +18,6 @@ limitations under the License.
 package awsdriver
 
 import (
-	"strings"
-
 	"github.com/aws/aws-sdk-go/service/acm/acmiface"
 	"github.com/aws/aws-sdk-go/service/applicationautoscaling/applicationautoscalingiface"
 	"github.com/aws/aws-sdk-go/service/autoscaling/autoscalingiface"
@@ -59,347 +57,7 @@ func (d *Ec2Driver) LookupIface(lookups ...string) (interface{}, error) {
 }
 
 func (d *Ec2Driver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createvpc":
-		if d.dryRun {
-			return d.Create_Vpc_DryRun, nil
-		}
-		return d.Create_Vpc, nil
-
-	case "deletevpc":
-		if d.dryRun {
-			return d.Delete_Vpc_DryRun, nil
-		}
-		return d.Delete_Vpc, nil
-
-	case "createsubnet":
-		if d.dryRun {
-			return d.Create_Subnet_DryRun, nil
-		}
-		return d.Create_Subnet, nil
-
-	case "updatesubnet":
-		if d.dryRun {
-			return d.Update_Subnet_DryRun, nil
-		}
-		return d.Update_Subnet, nil
-
-	case "deletesubnet":
-		if d.dryRun {
-			return d.Delete_Subnet_DryRun, nil
-		}
-		return d.Delete_Subnet, nil
-
-	case "createinstance":
-		if d.dryRun {
-			return d.Create_Instance_DryRun, nil
-		}
-		return d.Create_Instance, nil
-
-	case "updateinstance":
-		if d.dryRun {
-			return d.Update_Instance_DryRun, nil
-		}
-		return d.Update_Instance, nil
-
-	case "deleteinstance":
-		if d.dryRun {
-			return d.Delete_Instance_DryRun, nil
-		}
-		return d.Delete_Instance, nil
-
-	case "startinstance":
-		if d.dryRun {
-			return d.Start_Instance_DryRun, nil
-		}
-		return d.Start_Instance, nil
-
-	case "stopinstance":
-		if d.dryRun {
-			return d.Stop_Instance_DryRun, nil
-		}
-		return d.Stop_Instance, nil
-
-	case "checkinstance":
-		if d.dryRun {
-			return d.Check_Instance_DryRun, nil
-		}
-		return d.Check_Instance, nil
-
-	case "attachinstanceprofile":
-		if d.dryRun {
-			return d.Attach_Instanceprofile_DryRun, nil
-		}
-		return d.Attach_Instanceprofile, nil
-
-	case "detachinstanceprofile":
-		if d.dryRun {
-			return d.Detach_Instanceprofile_DryRun, nil
-		}
-		return d.Detach_Instanceprofile, nil
-
-	case "createsecuritygroup":
-		if d.dryRun {
-			return d.Create_Securitygroup_DryRun, nil
-		}
-		return d.Create_Securitygroup, nil
-
-	case "updatesecuritygroup":
-		if d.dryRun {
-			return d.Update_Securitygroup_DryRun, nil
-		}
-		return d.Update_Securitygroup, nil
-
-	case "deletesecuritygroup":
-		if d.dryRun {
-			return d.Delete_Securitygroup_DryRun, nil
-		}
-		return d.Delete_Securitygroup, nil
-
-	case "checksecuritygroup":
-		if d.dryRun {
-			return d.Check_Securitygroup_DryRun, nil
-		}
-		return d.Check_Securitygroup, nil
-
-	case "attachsecuritygroup":
-		if d.dryRun {
-			return d.Attach_Securitygroup_DryRun, nil
-		}
-		return d.Attach_Securitygroup, nil
-
-	case "detachsecuritygroup":
-		if d.dryRun {
-			return d.Detach_Securitygroup_DryRun, nil
-		}
-		return d.Detach_Securitygroup, nil
-
-	case "copyimage":
-		if d.dryRun {
-			return d.Copy_Image_DryRun, nil
-		}
-		return d.Copy_Image, nil
-
-	case "importimage":
-		if d.dryRun {
-			return d.Import_Image_DryRun, nil
-		}
-		return d.Import_Image, nil
-
-	case "deleteimage":
-		if d.dryRun {
-			return d.Delete_Image_DryRun, nil
-		}
-		return d.Delete_Image, nil
-
-	case "createnetworkinterface":
-		if d.dryRun {
-			return d.Create_Networkinterface_DryRun, nil
-		}
-		return d.Create_Networkinterface, nil
-
-	case "deletenetworkinterface":
-		if d.dryRun {
-			return d.Delete_Networkinterface_DryRun, nil
-		}
-		return d.Delete_Networkinterface, nil
-
-	case "attachnetworkinterface":
-		if d.dryRun {
-			return d.Attach_Networkinterface_DryRun, nil
-		}
-		return d.Attach_Networkinterface, nil
-
-	case "detachnetworkinterface":
-		if d.dryRun {
-			return d.Detach_Networkinterface_DryRun, nil
-		}
-		return d.Detach_Networkinterface, nil
-
-	case "checknetworkinterface":
-		if d.dryRun {
-			return d.Check_Networkinterface_DryRun, nil
-		}
-		return d.Check_Networkinterface, nil
-
-	case "createvolume":
-		if d.dryRun {
-			return d.Create_Volume_DryRun, nil
-		}
-		return d.Create_Volume, nil
-
-	case "checkvolume":
-		if d.dryRun {
-			return d.Check_Volume_DryRun, nil
-		}
-		return d.Check_Volume, nil
-
-	case "deletevolume":
-		if d.dryRun {
-			return d.Delete_Volume_DryRun, nil
-		}
-		return d.Delete_Volume, nil
-
-	case "attachvolume":
-		if d.dryRun {
-			return d.Attach_Volume_DryRun, nil
-		}
-		return d.Attach_Volume, nil
-
-	case "detachvolume":
-		if d.dryRun {
-			return d.Detach_Volume_DryRun, nil
-		}
-		return d.Detach_Volume, nil
-
-	case "createsnapshot":
-		if d.dryRun {
-			return d.Create_Snapshot_DryRun, nil
-		}
-		return d.Create_Snapshot, nil
-
-	case "deletesnapshot":
-		if d.dryRun {
-			return d.Delete_Snapshot_DryRun, nil
-		}
-		return d.Delete_Snapshot, nil
-
-	case "copysnapshot":
-		if d.dryRun {
-			return d.Copy_Snapshot_DryRun, nil
-		}
-		return d.Copy_Snapshot, nil
-
-	case "createinternetgateway":
-		if d.dryRun {
-			return d.Create_Internetgateway_DryRun, nil
-		}
-		return d.Create_Internetgateway, nil
-
-	case "deleteinternetgateway":
-		if d.dryRun {
-			return d.Delete_Internetgateway_DryRun, nil
-		}
-		return d.Delete_Internetgateway, nil
-
-	case "attachinternetgateway":
-		if d.dryRun {
-			return d.Attach_Internetgateway_DryRun, nil
-		}
-		return d.Attach_Internetgateway, nil
-
-	case "detachinternetgateway":
-		if d.dryRun {
-			return d.Detach_Internetgateway_DryRun, nil
-		}
-		return d.Detach_Internetgateway, nil
-
-	case "createnatgateway":
-		if d.dryRun {
-			return d.Create_Natgateway_DryRun, nil
-		}
-		return d.Create_Natgateway, nil
-
-	case "deletenatgateway":
-		if d.dryRun {
-			return d.Delete_Natgateway_DryRun, nil
-		}
-		return d.Delete_Natgateway, nil
-
-	case "checknatgateway":
-		if d.dryRun {
-			return d.Check_Natgateway_DryRun, nil
-		}
-		return d.Check_Natgateway, nil
-
-	case "createroutetable":
-		if d.dryRun {
-			return d.Create_Routetable_DryRun, nil
-		}
-		return d.Create_Routetable, nil
-
-	case "deleteroutetable":
-		if d.dryRun {
-			return d.Delete_Routetable_DryRun, nil
-		}
-		return d.Delete_Routetable, nil
-
-	case "attachroutetable":
-		if d.dryRun {
-			return d.Attach_Routetable_DryRun, nil
-		}
-		return d.Attach_Routetable, nil
-
-	case "detachroutetable":
-		if d.dryRun {
-			return d.Detach_Routetable_DryRun, nil
-		}
-		return d.Detach_Routetable, nil
-
-	case "createroute":
-		if d.dryRun {
-			return d.Create_Route_DryRun, nil
-		}
-		return d.Create_Route, nil
-
-	case "deleteroute":
-		if d.dryRun {
-			return d.Delete_Route_DryRun, nil
-		}
-		return d.Delete_Route, nil
-
-	case "createtag":
-		if d.dryRun {
-			return d.Create_Tag_DryRun, nil
-		}
-		return d.Create_Tag, nil
-
-	case "deletetag":
-		if d.dryRun {
-			return d.Delete_Tag_DryRun, nil
-		}
-		return d.Delete_Tag, nil
-
-	case "createkeypair":
-		if d.dryRun {
-			return d.Create_Keypair_DryRun, nil
-		}
-		return d.Create_Keypair, nil
-
-	case "deletekeypair":
-		if d.dryRun {
-			return d.Delete_Keypair_DryRun, nil
-		}
-		return d.Delete_Keypair, nil
-
-	case "createelasticip":
-		if d.dryRun {
-			return d.Create_Elasticip_DryRun, nil
-		}
-		return d.Create_Elasticip, nil
-
-	case "deleteelasticip":
-		if d.dryRun {
-			return d.Delete_Elasticip_DryRun, nil
-		}
-		return d.Delete_Elasticip, nil
-
-	case "attachelasticip":
-		if d.dryRun {
-			return d.Attach_Elasticip_DryRun, nil
-		}
-		return d.Attach_Elasticip, nil
-
-	case "detachelasticip":
-		if d.dryRun {
-			return d.Detach_Elasticip_DryRun, nil
-		}
-		return d.Detach_Elasticip, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type Elbv2Driver struct {
@@ -419,71 +77,7 @@ func (d *Elbv2Driver) LookupIface(lookups ...string) (interface{}, error) {
 }
 
 func (d *Elbv2Driver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createloadbalancer":
-		if d.dryRun {
-			return d.Create_Loadbalancer_DryRun, nil
-		}
-		return d.Create_Loadbalancer, nil
-
-	case "deleteloadbalancer":
-		if d.dryRun {
-			return d.Delete_Loadbalancer_DryRun, nil
-		}
-		return d.Delete_Loadbalancer, nil
-
-	case "checkloadbalancer":
-		if d.dryRun {
-			return d.Check_Loadbalancer_DryRun, nil
-		}
-		return d.Check_Loadbalancer, nil
-
-	case "createlistener":
-		if d.dryRun {
-			return d.Create_Listener_DryRun, nil
-		}
-		return d.Create_Listener, nil
-
-	case "deletelistener":
-		if d.dryRun {
-			return d.Delete_Listener_DryRun, nil
-		}
-		return d.Delete_Listener, nil
-
-	case "createtargetgroup":
-		if d.dryRun {
-			return d.Create_Targetgroup_DryRun, nil
-		}
-		return d.Create_Targetgroup, nil
-
-	case "updatetargetgroup":
-		if d.dryRun {
-			return d.Update_Targetgroup_DryRun, nil
-		}
-		return d.Update_Targetgroup, nil
-
-	case "deletetargetgroup":
-		if d.dryRun {
-			return d.Delete_Targetgroup_DryRun, nil
-		}
-		return d.Delete_Targetgroup, nil
-
-	case "attachinstance":
-		if d.dryRun {
-			return d.Attach_Instance_DryRun, nil
-		}
-		return d.Attach_Instance, nil
-
-	case "detachinstance":
-		if d.dryRun {
-			return d.Detach_Instance_DryRun, nil
-		}
-		return d.Detach_Instance, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type AutoscalingDriver struct {
@@ -503,59 +97,7 @@ func (d *AutoscalingDriver) LookupIface(lookups ...string) (interface{}, error) 
 }
 
 func (d *AutoscalingDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createlaunchconfiguration":
-		if d.dryRun {
-			return d.Create_Launchconfiguration_DryRun, nil
-		}
-		return d.Create_Launchconfiguration, nil
-
-	case "deletelaunchconfiguration":
-		if d.dryRun {
-			return d.Delete_Launchconfiguration_DryRun, nil
-		}
-		return d.Delete_Launchconfiguration, nil
-
-	case "createscalinggroup":
-		if d.dryRun {
-			return d.Create_Scalinggroup_DryRun, nil
-		}
-		return d.Create_Scalinggroup, nil
-
-	case "updatescalinggroup":
-		if d.dryRun {
-			return d.Update_Scalinggroup_DryRun, nil
-		}
-		return d.Update_Scalinggroup, nil
-
-	case "deletescalinggroup":
-		if d.dryRun {
-			return d.Delete_Scalinggroup_DryRun, nil
-		}
-		return d.Delete_Scalinggroup, nil
-
-	case "checkscalinggroup":
-		if d.dryRun {
-			return d.Check_Scalinggroup_DryRun, nil
-		}
-		return d.Check_Scalinggroup, nil
-
-	case "createscalingpolicy":
-		if d.dryRun {
-			return d.Create_Scalingpolicy_DryRun, nil
-		}
-		return d.Create_Scalingpolicy, nil
-
-	case "deletescalingpolicy":
-		if d.dryRun {
-			return d.Delete_Scalingpolicy_DryRun, nil
-		}
-		return d.Delete_Scalingpolicy, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type RdsDriver struct {
@@ -575,41 +117,7 @@ func (d *RdsDriver) LookupIface(lookups ...string) (interface{}, error) {
 }
 
 func (d *RdsDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createdatabase":
-		if d.dryRun {
-			return d.Create_Database_DryRun, nil
-		}
-		return d.Create_Database, nil
-
-	case "deletedatabase":
-		if d.dryRun {
-			return d.Delete_Database_DryRun, nil
-		}
-		return d.Delete_Database, nil
-
-	case "checkdatabase":
-		if d.dryRun {
-			return d.Check_Database_DryRun, nil
-		}
-		return d.Check_Database, nil
-
-	case "createdbsubnetgroup":
-		if d.dryRun {
-			return d.Create_Dbsubnetgroup_DryRun, nil
-		}
-		return d.Create_Dbsubnetgroup, nil
-
-	case "deletedbsubnetgroup":
-		if d.dryRun {
-			return d.Delete_Dbsubnetgroup_DryRun, nil
-		}
-		return d.Delete_Dbsubnetgroup, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type EcrDriver struct {
@@ -629,29 +137,7 @@ func (d *EcrDriver) LookupIface(lookups ...string) (interface{}, error) {
 }
 
 func (d *EcrDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createrepository":
-		if d.dryRun {
-			return d.Create_Repository_DryRun, nil
-		}
-		return d.Create_Repository, nil
-
-	case "deleterepository":
-		if d.dryRun {
-			return d.Delete_Repository_DryRun, nil
-		}
-		return d.Delete_Repository, nil
-
-	case "authenticateregistry":
-		if d.dryRun {
-			return d.Authenticate_Registry_DryRun, nil
-		}
-		return d.Authenticate_Registry, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type EcsDriver struct {
@@ -671,59 +157,7 @@ func (d *EcsDriver) LookupIface(lookups ...string) (interface{}, error) {
 }
 
 func (d *EcsDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createcontainercluster":
-		if d.dryRun {
-			return d.Create_Containercluster_DryRun, nil
-		}
-		return d.Create_Containercluster, nil
-
-	case "deletecontainercluster":
-		if d.dryRun {
-			return d.Delete_Containercluster_DryRun, nil
-		}
-		return d.Delete_Containercluster, nil
-
-	case "startcontainertask":
-		if d.dryRun {
-			return d.Start_Containertask_DryRun, nil
-		}
-		return d.Start_Containertask, nil
-
-	case "stopcontainertask":
-		if d.dryRun {
-			return d.Stop_Containertask_DryRun, nil
-		}
-		return d.Stop_Containertask, nil
-
-	case "updatecontainertask":
-		if d.dryRun {
-			return d.Update_Containertask_DryRun, nil
-		}
-		return d.Update_Containertask, nil
-
-	case "attachcontainertask":
-		if d.dryRun {
-			return d.Attach_Containertask_DryRun, nil
-		}
-		return d.Attach_Containertask, nil
-
-	case "detachcontainertask":
-		if d.dryRun {
-			return d.Detach_Containertask_DryRun, nil
-		}
-		return d.Detach_Containertask, nil
-
-	case "deletecontainertask":
-		if d.dryRun {
-			return d.Delete_Containertask_DryRun, nil
-		}
-		return d.Delete_Containertask, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type AcmDriver struct {
@@ -743,29 +177,7 @@ func (d *AcmDriver) LookupIface(lookups ...string) (interface{}, error) {
 }
 
 func (d *AcmDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createcertificate":
-		if d.dryRun {
-			return d.Create_Certificate_DryRun, nil
-		}
-		return d.Create_Certificate, nil
-
-	case "deletecertificate":
-		if d.dryRun {
-			return d.Delete_Certificate_DryRun, nil
-		}
-		return d.Delete_Certificate, nil
-
-	case "checkcertificate":
-		if d.dryRun {
-			return d.Check_Certificate_DryRun, nil
-		}
-		return d.Check_Certificate, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type StsDriver struct {
@@ -785,11 +197,7 @@ func (d *StsDriver) LookupIface(lookups ...string) (interface{}, error) {
 }
 
 func (d *StsDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type IamDriver struct {
@@ -809,167 +217,7 @@ func (d *IamDriver) LookupIface(lookups ...string) (interface{}, error) {
 }
 
 func (d *IamDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createuser":
-		if d.dryRun {
-			return d.Create_User_DryRun, nil
-		}
-		return d.Create_User, nil
-
-	case "deleteuser":
-		if d.dryRun {
-			return d.Delete_User_DryRun, nil
-		}
-		return d.Delete_User, nil
-
-	case "attachuser":
-		if d.dryRun {
-			return d.Attach_User_DryRun, nil
-		}
-		return d.Attach_User, nil
-
-	case "detachuser":
-		if d.dryRun {
-			return d.Detach_User_DryRun, nil
-		}
-		return d.Detach_User, nil
-
-	case "createaccesskey":
-		if d.dryRun {
-			return d.Create_Accesskey_DryRun, nil
-		}
-		return d.Create_Accesskey, nil
-
-	case "deleteaccesskey":
-		if d.dryRun {
-			return d.Delete_Accesskey_DryRun, nil
-		}
-		return d.Delete_Accesskey, nil
-
-	case "createloginprofile":
-		if d.dryRun {
-			return d.Create_Loginprofile_DryRun, nil
-		}
-		return d.Create_Loginprofile, nil
-
-	case "updateloginprofile":
-		if d.dryRun {
-			return d.Update_Loginprofile_DryRun, nil
-		}
-		return d.Update_Loginprofile, nil
-
-	case "deleteloginprofile":
-		if d.dryRun {
-			return d.Delete_Loginprofile_DryRun, nil
-		}
-		return d.Delete_Loginprofile, nil
-
-	case "creategroup":
-		if d.dryRun {
-			return d.Create_Group_DryRun, nil
-		}
-		return d.Create_Group, nil
-
-	case "deletegroup":
-		if d.dryRun {
-			return d.Delete_Group_DryRun, nil
-		}
-		return d.Delete_Group, nil
-
-	case "createrole":
-		if d.dryRun {
-			return d.Create_Role_DryRun, nil
-		}
-		return d.Create_Role, nil
-
-	case "deleterole":
-		if d.dryRun {
-			return d.Delete_Role_DryRun, nil
-		}
-		return d.Delete_Role, nil
-
-	case "attachrole":
-		if d.dryRun {
-			return d.Attach_Role_DryRun, nil
-		}
-		return d.Attach_Role, nil
-
-	case "detachrole":
-		if d.dryRun {
-			return d.Detach_Role_DryRun, nil
-		}
-		return d.Detach_Role, nil
-
-	case "createinstanceprofile":
-		if d.dryRun {
-			return d.Create_Instanceprofile_DryRun, nil
-		}
-		return d.Create_Instanceprofile, nil
-
-	case "deleteinstanceprofile":
-		if d.dryRun {
-			return d.Delete_Instanceprofile_DryRun, nil
-		}
-		return d.Delete_Instanceprofile, nil
-
-	case "createpolicy":
-		if d.dryRun {
-			return d.Create_Policy_DryRun, nil
-		}
-		return d.Create_Policy, nil
-
-	case "updatepolicy":
-		if d.dryRun {
-			return d.Update_Policy_DryRun, nil
-		}
-		return d.Update_Policy, nil
-
-	case "deletepolicy":
-		if d.dryRun {
-			return d.Delete_Policy_DryRun, nil
-		}
-		return d.Delete_Policy, nil
-
-	case "attachpolicy":
-		if d.dryRun {
-			return d.Attach_Policy_DryRun, nil
-		}
-		return d.Attach_Policy, nil
-
-	case "detachpolicy":
-		if d.dryRun {
-			return d.Detach_Policy_DryRun, nil
-		}
-		return d.Detach_Policy, nil
-
-	case "createmfadevice":
-		if d.dryRun {
-			return d.Create_Mfadevice_DryRun, nil
-		}
-		return d.Create_Mfadevice, nil
-
-	case "deletemfadevice":
-		if d.dryRun {
-			return d.Delete_Mfadevice_DryRun, nil
-		}
-		return d.Delete_Mfadevice, nil
-
-	case "attachmfadevice":
-		if d.dryRun {
-			return d.Attach_Mfadevice_DryRun, nil
-		}
-		return d.Attach_Mfadevice, nil
-
-	case "detachmfadevice":
-		if d.dryRun {
-			return d.Detach_Mfadevice_DryRun, nil
-		}
-		return d.Detach_Mfadevice, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type S3Driver struct {
@@ -989,47 +237,7 @@ func (d *S3Driver) LookupIface(lookups ...string) (interface{}, error) {
 }
 
 func (d *S3Driver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createbucket":
-		if d.dryRun {
-			return d.Create_Bucket_DryRun, nil
-		}
-		return d.Create_Bucket, nil
-
-	case "updatebucket":
-		if d.dryRun {
-			return d.Update_Bucket_DryRun, nil
-		}
-		return d.Update_Bucket, nil
-
-	case "deletebucket":
-		if d.dryRun {
-			return d.Delete_Bucket_DryRun, nil
-		}
-		return d.Delete_Bucket, nil
-
-	case "creates3object":
-		if d.dryRun {
-			return d.Create_S3object_DryRun, nil
-		}
-		return d.Create_S3object, nil
-
-	case "updates3object":
-		if d.dryRun {
-			return d.Update_S3object_DryRun, nil
-		}
-		return d.Update_S3object, nil
-
-	case "deletes3object":
-		if d.dryRun {
-			return d.Delete_S3object_DryRun, nil
-		}
-		return d.Delete_S3object, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type SnsDriver struct {
@@ -1049,35 +257,7 @@ func (d *SnsDriver) LookupIface(lookups ...string) (interface{}, error) {
 }
 
 func (d *SnsDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createtopic":
-		if d.dryRun {
-			return d.Create_Topic_DryRun, nil
-		}
-		return d.Create_Topic, nil
-
-	case "deletetopic":
-		if d.dryRun {
-			return d.Delete_Topic_DryRun, nil
-		}
-		return d.Delete_Topic, nil
-
-	case "createsubscription":
-		if d.dryRun {
-			return d.Create_Subscription_DryRun, nil
-		}
-		return d.Create_Subscription, nil
-
-	case "deletesubscription":
-		if d.dryRun {
-			return d.Delete_Subscription_DryRun, nil
-		}
-		return d.Delete_Subscription, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type SqsDriver struct {
@@ -1097,23 +277,7 @@ func (d *SqsDriver) LookupIface(lookups ...string) (interface{}, error) {
 }
 
 func (d *SqsDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createqueue":
-		if d.dryRun {
-			return d.Create_Queue_DryRun, nil
-		}
-		return d.Create_Queue, nil
-
-	case "deletequeue":
-		if d.dryRun {
-			return d.Delete_Queue_DryRun, nil
-		}
-		return d.Delete_Queue, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type Route53Driver struct {
@@ -1133,41 +297,7 @@ func (d *Route53Driver) LookupIface(lookups ...string) (interface{}, error) {
 }
 
 func (d *Route53Driver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createzone":
-		if d.dryRun {
-			return d.Create_Zone_DryRun, nil
-		}
-		return d.Create_Zone, nil
-
-	case "deletezone":
-		if d.dryRun {
-			return d.Delete_Zone_DryRun, nil
-		}
-		return d.Delete_Zone, nil
-
-	case "createrecord":
-		if d.dryRun {
-			return d.Create_Record_DryRun, nil
-		}
-		return d.Create_Record, nil
-
-	case "deleterecord":
-		if d.dryRun {
-			return d.Delete_Record_DryRun, nil
-		}
-		return d.Delete_Record, nil
-
-	case "updaterecord":
-		if d.dryRun {
-			return d.Update_Record_DryRun, nil
-		}
-		return d.Update_Record, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type LambdaDriver struct {
@@ -1187,23 +317,7 @@ func (d *LambdaDriver) LookupIface(lookups ...string) (interface{}, error) {
 }
 
 func (d *LambdaDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createfunction":
-		if d.dryRun {
-			return d.Create_Function_DryRun, nil
-		}
-		return d.Create_Function, nil
-
-	case "deletefunction":
-		if d.dryRun {
-			return d.Delete_Function_DryRun, nil
-		}
-		return d.Delete_Function, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type CloudwatchDriver struct {
@@ -1223,47 +337,7 @@ func (d *CloudwatchDriver) LookupIface(lookups ...string) (interface{}, error) {
 }
 
 func (d *CloudwatchDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createalarm":
-		if d.dryRun {
-			return d.Create_Alarm_DryRun, nil
-		}
-		return d.Create_Alarm, nil
-
-	case "deletealarm":
-		if d.dryRun {
-			return d.Delete_Alarm_DryRun, nil
-		}
-		return d.Delete_Alarm, nil
-
-	case "startalarm":
-		if d.dryRun {
-			return d.Start_Alarm_DryRun, nil
-		}
-		return d.Start_Alarm, nil
-
-	case "stopalarm":
-		if d.dryRun {
-			return d.Stop_Alarm_DryRun, nil
-		}
-		return d.Stop_Alarm, nil
-
-	case "attachalarm":
-		if d.dryRun {
-			return d.Attach_Alarm_DryRun, nil
-		}
-		return d.Attach_Alarm, nil
-
-	case "detachalarm":
-		if d.dryRun {
-			return d.Detach_Alarm_DryRun, nil
-		}
-		return d.Detach_Alarm, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type CloudfrontDriver struct {
@@ -1283,35 +357,7 @@ func (d *CloudfrontDriver) LookupIface(lookups ...string) (interface{}, error) {
 }
 
 func (d *CloudfrontDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createdistribution":
-		if d.dryRun {
-			return d.Create_Distribution_DryRun, nil
-		}
-		return d.Create_Distribution, nil
-
-	case "checkdistribution":
-		if d.dryRun {
-			return d.Check_Distribution_DryRun, nil
-		}
-		return d.Check_Distribution, nil
-
-	case "updatedistribution":
-		if d.dryRun {
-			return d.Update_Distribution_DryRun, nil
-		}
-		return d.Update_Distribution, nil
-
-	case "deletedistribution":
-		if d.dryRun {
-			return d.Delete_Distribution_DryRun, nil
-		}
-		return d.Delete_Distribution, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type CloudformationDriver struct {
@@ -1331,29 +377,7 @@ func (d *CloudformationDriver) LookupIface(lookups ...string) (interface{}, erro
 }
 
 func (d *CloudformationDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createstack":
-		if d.dryRun {
-			return d.Create_Stack_DryRun, nil
-		}
-		return d.Create_Stack, nil
-
-	case "updatestack":
-		if d.dryRun {
-			return d.Update_Stack_DryRun, nil
-		}
-		return d.Update_Stack, nil
-
-	case "deletestack":
-		if d.dryRun {
-			return d.Delete_Stack_DryRun, nil
-		}
-		return d.Delete_Stack, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }
 
 type ApplicationautoscalingDriver struct {
@@ -1373,33 +397,5 @@ func (d *ApplicationautoscalingDriver) LookupIface(lookups ...string) (interface
 }
 
 func (d *ApplicationautoscalingDriver) Lookup(lookups ...string) (driverFn driver.DriverFn, err error) {
-	switch strings.Join(lookups, "") {
-
-	case "createappscalingtarget":
-		if d.dryRun {
-			return d.Create_Appscalingtarget_DryRun, nil
-		}
-		return d.Create_Appscalingtarget, nil
-
-	case "deleteappscalingtarget":
-		if d.dryRun {
-			return d.Delete_Appscalingtarget_DryRun, nil
-		}
-		return d.Delete_Appscalingtarget, nil
-
-	case "createappscalingpolicy":
-		if d.dryRun {
-			return d.Create_Appscalingpolicy_DryRun, nil
-		}
-		return d.Create_Appscalingpolicy, nil
-
-	case "deleteappscalingpolicy":
-		if d.dryRun {
-			return d.Delete_Appscalingpolicy_DryRun, nil
-		}
-		return d.Delete_Appscalingpolicy, nil
-
-	default:
-		return nil, driver.ErrDriverFnNotFound
-	}
+	return nil, driver.ErrDriverFnNotFound
 }

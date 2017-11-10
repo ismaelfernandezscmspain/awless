@@ -61,7 +61,7 @@ func TestTargetgroup(t *testing.T) {
 			Matcher: &elbv2.Matcher{
 				HttpCode: String("OK"),
 			},
-		}).ExpectCalls("ModifyTargetGroupAttributes", "ModifyTargetGroup").Run(t)
+		}).ExpectCommandResult("any-tg").ExpectCalls("ModifyTargetGroupAttributes", "ModifyTargetGroup").Run(t)
 	})
 
 	t.Run("delete", func(t *testing.T) {

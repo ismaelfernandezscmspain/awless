@@ -77,7 +77,7 @@ type DeleteImage struct {
 	logger          *logger.Logger
 	api             ec2iface.EC2API
 	Id              *string `templateName:"id" required:""`
-	DeleteSnapshots *bool   `templateName:"delete-snapshots" required:""`
+	DeleteSnapshots *bool   `templateName:"delete-snapshots"`
 }
 
 func (cmd *DeleteImage) ValidateParams(params []string) ([]string, error) {
@@ -90,16 +90,14 @@ func (cmd *DeleteImage) DryRun(ctx, params map[string]interface{}) (interface{},
 	}
 	input := &ec2.DeregisterImageInput{}
 	input.DryRun = Bool(true)
-	var err error
 
-	// Required params
-	err = setFieldWithType(cmd.Id, input, "ImageId", awsstr)
-	if err != nil {
+	if err := setFieldWithType(cmd.Id, input, "ImageId", awsstr); err != nil {
 		return nil, err
 	}
 
 	if BoolValue(cmd.DeleteSnapshots) {
 		var snaps []string
+		var err error
 		if snaps, err = cmd.imageSnapshots(StringValue(input.ImageId)); err != nil {
 			return nil, err
 		}
@@ -108,7 +106,7 @@ func (cmd *DeleteImage) DryRun(ctx, params map[string]interface{}) (interface{},
 		}
 	}
 
-	_, err = cmd.api.DeregisterImage(input)
+	_, err := cmd.api.DeregisterImage(input)
 	if awsErr, ok := err.(awserr.Error); ok {
 		switch code := awsErr.Code(); {
 		case code == dryRunOperation, strings.HasSuffix(code, notFound):
@@ -123,14 +121,13 @@ func (cmd *DeleteImage) DryRun(ctx, params map[string]interface{}) (interface{},
 
 func (cmd *DeleteImage) ManualRun(ctx map[string]interface{}) (interface{}, error) {
 	input := &ec2.DeregisterImageInput{}
-	var err error
 
-	err = setFieldWithType(cmd.Id, input, "ImageId", awsstr)
-	if err != nil {
+	if err := setFieldWithType(cmd.Id, input, "ImageId", awsstr); err != nil {
 		return nil, err
 	}
 
 	var snaps []string
+	var err error
 	if BoolValue(cmd.DeleteSnapshots) {
 		if snaps, err = cmd.imageSnapshots(StringValue(input.ImageId)); err != nil {
 			return nil, err
@@ -139,9 +136,8 @@ func (cmd *DeleteImage) ManualRun(ctx map[string]interface{}) (interface{}, erro
 
 	start := time.Now()
 	var output *ec2.DeregisterImageOutput
-	output, err = cmd.api.DeregisterImage(input)
-	if err != nil {
-		return nil, fmt.Errorf("deregister: %s", err)
+	if output, err = cmd.api.DeregisterImage(input); err != nil {
+		return nil, err
 	}
 	cmd.logger.ExtraVerbosef("ec2.DeregisterImage call took %s", time.Since(start))
 

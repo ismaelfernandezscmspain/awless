@@ -52,6 +52,7 @@ func (s *Template) Run(env *Env) (*Template, error) {
 			if env.IsDryRun {
 				if v, ok := n.Command.(dryRunner); ok {
 					n.CmdResult, n.CmdErr = v.DryRun(ctx, n.ToDriverParams())
+					n.CmdErr = prefixError(n.CmdErr, "dry run")
 				}
 			} else {
 				n.CmdResult, n.CmdErr = n.Run(ctx, n.ToDriverParams())
@@ -68,6 +69,7 @@ func (s *Template) Run(env *Env) (*Template, error) {
 				if env.IsDryRun {
 					if v, ok := n.Command.(dryRunner); ok {
 						n.CmdResult, n.CmdErr = v.DryRun(ctx, n.ToDriverParams())
+						n.CmdErr = prefixError(n.CmdErr, "dry run")
 					}
 				} else {
 					n.CmdResult, n.CmdErr = n.Run(ctx, n.ToDriverParams())
@@ -85,6 +87,13 @@ func (s *Template) Run(env *Env) (*Template, error) {
 	}
 
 	return current, nil
+}
+
+func prefixError(err error, prefix string) error {
+	if err == nil {
+		return err
+	}
+	return fmt.Errorf("%s: %s", prefix, err.Error())
 }
 
 func (s *Template) Validate(rules ...Validator) (all []error) {

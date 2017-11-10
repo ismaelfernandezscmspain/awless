@@ -54,7 +54,7 @@ type UpdateBucket struct {
 
 func (cmd *UpdateBucket) ValidateParams(params []string) ([]string, error) {
 	return paramRule{
-		tree:   allOf(oneOfE(node("public-website"), node("acl")), node("name")),
+		tree:   allOf(node("name"), oneOfE(node("public-website"), node("acl"))),
 		extras: []string{"redirect-hostname", "index-suffix", "enforce-https"},
 	}.verify(params)
 }
@@ -76,7 +76,6 @@ func (cmd *UpdateBucket) ManualRun(ctx map[string]interface{}) (interface{}, err
 		}
 
 		cmd.logger.ExtraVerbosef("s3.PutBucketAcl call took %s", time.Since(start))
-		cmd.logger.Info("update bucket done")
 		return nil, nil
 	}
 
@@ -106,7 +105,6 @@ func (cmd *UpdateBucket) ManualRun(ctx map[string]interface{}) (interface{}, err
 			}
 		}
 		cmd.logger.ExtraVerbosef("s3.PutBucketWebsite call took %s", time.Since(start))
-		cmd.logger.Info("update bucket done")
 	}
 	return nil, nil
 }

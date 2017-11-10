@@ -89,8 +89,6 @@ func (cmd *CreateDistribution) ManualRun(ctx map[string]interface{}) (interface{
 		input.DistributionConfig.Origins.Items[0].S3OriginConfig = &cloudfront.S3OriginConfig{OriginAccessIdentity: aws.String("")}
 	}
 
-	// Extra params
-
 	if cmd.Certificate != nil {
 		if err := setFieldWithType(cmd.Certificate, input, "DistributionConfig.ViewerCertificate.ACMCertificateArn", awsstr); err != nil {
 			return nil, err

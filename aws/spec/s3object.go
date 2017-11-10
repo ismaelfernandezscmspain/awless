@@ -42,6 +42,21 @@ func (cmd *CreateS3object) ValidateParams(params []string) ([]string, error) {
 	return validateParams(cmd, params)
 }
 
+func (cmd *CreateS3object) ValidateFile() error {
+	filepath := StringValue(cmd.File)
+	stat, err := os.Stat(filepath)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("cannot find file '%s'", filepath)
+	}
+	if err != nil {
+		return err
+	}
+	if stat.IsDir() {
+		return fmt.Errorf("'%s' is a directory", filepath)
+	}
+	return nil
+}
+
 func (cmd *CreateS3object) ManualRun(map[string]interface{}) (interface{}, error) {
 	input := &s3.PutObjectInput{}
 
@@ -58,7 +73,7 @@ func (cmd *CreateS3object) ManualRun(map[string]interface{}) (interface{}, error
 	input.Body = progressR
 
 	var fileName string
-	if n := StringValue(cmd.Name); cmd.Name != nil && n != "" {
+	if n := StringValue(cmd.Name); n != "" {
 		fileName = n
 	} else {
 		_, fileName = filepath.Split(f.Name())
@@ -66,7 +81,6 @@ func (cmd *CreateS3object) ManualRun(map[string]interface{}) (interface{}, error
 	input.Key = aws.String(fileName)
 
 	fileExt := filepath.Ext(f.Name())
-	fmt.Println(fileExt, mime.TypeByExtension(fileExt))
 	if mimeType := mime.TypeByExtension(fileExt); mimeType != "" {
 		cmd.logger.ExtraVerbosef("setting object content-type to '%s'", mimeType)
 		input.ContentType = aws.String(mimeType)
@@ -84,17 +98,15 @@ func (cmd *CreateS3object) ManualRun(map[string]interface{}) (interface{}, error
 
 	cmd.logger.Infof("uploading '%s'", fileName)
 
-	_, err = cmd.api.PutObject(input)
-	if err != nil {
-		return nil, fmt.Errorf("create s3object: %s", err)
+	if _, err = cmd.api.PutObject(input); err != nil {
+		return nil, err
 	}
 
-	cmd.logger.Info("create s3object done")
 	return fileName, nil
 }
 
 func (cmd *CreateS3object) ExtractResult(i interface{}) string {
-	return fmt.Sprint(i) // simple string
+	return i.(string)
 }
 
 type UpdateS3object struct {

@@ -106,7 +106,7 @@ func (cmd *AttachAlarm) ValidateParams(params []string) ([]string, error) {
 func (cmd *AttachAlarm) ManualRun(ctx map[string]interface{}) (interface{}, error) {
 	alarm, err := getAlarm(cmd.api, cmd.Name)
 	if err != nil {
-		return nil, fmt.Errorf("attach alarm: %s", err)
+		return nil, err
 	}
 	alarm.AlarmActions = append(alarm.AlarmActions, cmd.ActionArn)
 
@@ -147,7 +147,7 @@ func (cmd *DetachAlarm) ValidateParams(params []string) ([]string, error) {
 func (cmd *DetachAlarm) ManualRun(ctx map[string]interface{}) (interface{}, error) {
 	alarm, err := getAlarm(cmd.api, cmd.Name)
 	if err != nil {
-		return nil, fmt.Errorf("detach alarm: %s", err)
+		return nil, err
 	}
 	actionArn := aws.StringValue(cmd.ActionArn)
 	var found bool

@@ -230,33 +230,26 @@ func (cmd *AttachPolicy) ManualRun(ctx map[string]interface{}) (interface{}, err
 		input := &iam.AttachUserPolicyInput{}
 		input.PolicyArn = cmd.Arn
 		input.UserName = cmd.User
-		_, err := cmd.api.AttachUserPolicy(input)
-		if err != nil {
-			return nil, err
-		}
+		output, err := cmd.api.AttachUserPolicy(input)
 		cmd.logger.ExtraVerbosef("ec2.AttachUserPolicy call took %s", time.Since(start))
+		return output, err
 	case cmd.Group != nil:
 		input := &iam.AttachGroupPolicyInput{}
 		input.PolicyArn = cmd.Arn
 		input.GroupName = cmd.Group
-		_, err := cmd.api.AttachGroupPolicy(input)
-		if err != nil {
-			return nil, err
-		}
+		output, err := cmd.api.AttachGroupPolicy(input)
 		cmd.logger.ExtraVerbosef("ec2.AttachGroupPolicy call took %s", time.Since(start))
+		return output, err
 	case cmd.Role != nil:
 		input := &iam.AttachRolePolicyInput{}
 		input.PolicyArn = cmd.Arn
 		input.RoleName = cmd.Role
-		_, err := cmd.api.AttachRolePolicy(input)
-		if err != nil {
-			return nil, err
-		}
+		output, err := cmd.api.AttachRolePolicy(input)
 		cmd.logger.ExtraVerbosef("ec2.AttachRolePolicy call took %s", time.Since(start))
+		return output, err
 	default:
 		return nil, errors.New("missing one of 'user, group, role' param")
 	}
-	return "", nil
 }
 
 type DetachPolicy struct {
@@ -293,16 +286,6 @@ func (cmd *DetachPolicy) ConvertParams() ([]string, func(values map[string]inter
 		}
 }
 
-func (cmd *DetachPolicy) ManualValidateCommand(params map[string]interface{}, refs []string) (errs []error) {
-	if cmd.User == nil && cmd.Group == nil && cmd.Role == nil {
-		errs = append(errs, fmt.Errorf("missing required field 'user', 'group' or 'role'"))
-	}
-	if cmd.Arn == nil {
-		errs = append(errs, fmt.Errorf("missing required field 'arn'"))
-	}
-	return
-}
-
 func (cmd *DetachPolicy) ManualRun(ctx map[string]interface{}) (interface{}, error) {
 	start := time.Now()
 	switch {
@@ -310,33 +293,26 @@ func (cmd *DetachPolicy) ManualRun(ctx map[string]interface{}) (interface{}, err
 		input := &iam.DetachUserPolicyInput{}
 		input.PolicyArn = cmd.Arn
 		input.UserName = cmd.User
-		_, err := cmd.api.DetachUserPolicy(input)
-		if err != nil {
-			return nil, err
-		}
+		output, err := cmd.api.DetachUserPolicy(input)
 		cmd.logger.ExtraVerbosef("ec2.DetachUserPolicy call took %s", time.Since(start))
+		return output, err
 	case cmd.Group != nil:
 		input := &iam.DetachGroupPolicyInput{}
 		input.PolicyArn = cmd.Arn
 		input.GroupName = cmd.Group
-		_, err := cmd.api.DetachGroupPolicy(input)
-		if err != nil {
-			return nil, err
-		}
+		output, err := cmd.api.DetachGroupPolicy(input)
 		cmd.logger.ExtraVerbosef("ec2.DetachGroupPolicy call took %s", time.Since(start))
+		return output, err
 	case cmd.Role != nil:
 		input := &iam.DetachRolePolicyInput{}
 		input.PolicyArn = cmd.Arn
 		input.RoleName = cmd.Role
-		_, err := cmd.api.DetachRolePolicy(input)
-		if err != nil {
-			return nil, err
-		}
+		output, err := cmd.api.DetachRolePolicy(input)
 		cmd.logger.ExtraVerbosef("ec2.DetachRolePolicy call took %s", time.Since(start))
+		return output, err
 	default:
 		return nil, errors.New("missing one of 'user, group, role' param")
 	}
-	return "", nil
 }
 
 type policyBody struct {

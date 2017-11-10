@@ -17,7 +17,6 @@ package awsspec
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go/service/iam"
@@ -38,7 +37,10 @@ type CreateRole struct {
 }
 
 func (cmd *CreateRole) ValidateParams(params []string) ([]string, error) {
-	return validateParams(cmd, params)
+	return paramRule{
+		tree:   allOf(oneOfE(node("principal-account"), node("principal-user"), node("principal-service")), node("name")),
+		extras: []string{"conditions", "sleep-after"},
+	}.verify(params)
 }
 
 func (cmd *CreateRole) ManualRun(ctx map[string]interface{}) (interface{}, error) {
@@ -99,11 +101,11 @@ func (cmd *CreateRole) ManualRun(ctx map[string]interface{}) (interface{}, error
 		time.Sleep(time.Duration(vv) * time.Second)
 	}
 
-	return role.Arn, nil
+	return output, nil
 }
 
 func (cmd *CreateRole) ExtractResult(i interface{}) string {
-	return StringValue(i.(*string))
+	return StringValue(i.(*iam.CreateRoleOutput).Role.Arn)
 }
 
 type DeleteRole struct {
@@ -134,13 +136,8 @@ func (cmd *DeleteRole) ManualRun(ctx map[string]interface{}) (interface{}, error
 
 	start := time.Now()
 	output, err := cmd.api.DeleteRole(input)
-	if err != nil {
-		return nil, fmt.Errorf("delete role: %s", err)
-	}
 	cmd.logger.ExtraVerbosef("iam.DeleteRole call took %s", time.Since(start))
-	cmd.logger.Info("delete role done")
-
-	return output, nil
+	return output, err
 }
 
 type AttachRole struct {

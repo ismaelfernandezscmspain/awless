@@ -184,14 +184,20 @@ func (cmd *DetachInstanceprofile) ManualRun(ctx map[string]interface{}) (interfa
 			start := time.Now()
 			output, err := cmd.api.DisassociateIamInstanceProfile(input)
 			if err != nil {
-				return nil, fmt.Errorf("detach instanceprofile: %s", err)
+				return nil, err
 			}
 			cmd.logger.ExtraVerbosef("ec2.DisassociateIamInstanceProfile call took %s", time.Since(start))
 			id := StringValue(output.IamInstanceProfileAssociation.IamInstanceProfile.Id)
-			cmd.logger.Infof("detach instanceprofile '%s' done", id)
 			lastId = id
 		}
 	}
 
 	return lastId, nil
+}
+
+func (cmd *DetachInstanceprofile) ExtractResult(i interface{}) string {
+	if i != nil {
+		return fmt.Sprint(i)
+	}
+	return ""
 }

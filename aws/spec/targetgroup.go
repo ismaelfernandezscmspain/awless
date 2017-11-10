@@ -15,7 +15,6 @@ limitations under the License.
 package awsspec
 
 import (
-	"fmt"
 	"time"
 
 	awssdk "github.com/aws/aws-sdk-go/aws"
@@ -103,96 +102,81 @@ func (tg *UpdateTargetgroup) ManualRun(ctx map[string]interface{}) (interface{},
 	var err error
 
 	if areTargetAttrsModified {
-		err = setFieldWithType(tgArn, attrsInput, "TargetGroupArn", awsstr, ctx)
-		if err != nil {
+		if err = setFieldWithType(tgArn, attrsInput, "TargetGroupArn", awsstr, ctx); err != nil {
 			return nil, err
 		}
 		start := time.Now()
-		_, err = tg.api.ModifyTargetGroupAttributes(attrsInput)
-		if err != nil {
-			return nil, fmt.Errorf("modify targetgroup attributes: %s", err)
+		if _, err = tg.api.ModifyTargetGroupAttributes(attrsInput); err != nil {
+			return nil, err
 		}
 		tg.logger.ExtraVerbosef("elbv2.ModifyTargetGroupAttributes call took %s", time.Since(start))
-		tg.logger.Infof("modify targetgroup attributes '%s' done", tgArn)
 	}
 
 	input := &elbv2.ModifyTargetGroupInput{}
 	var isTargetGroupModified bool
 
 	if v := tg.Healthcheckinterval; v != nil {
-		err = setFieldWithType(v, input, "HealthCheckIntervalSeconds", awsint64, ctx)
-		if err != nil {
+		if err = setFieldWithType(v, input, "HealthCheckIntervalSeconds", awsint64, ctx); err != nil {
 			return nil, err
 		}
 		isTargetGroupModified = true
 	}
 	if v := tg.Healthcheckpath; v != nil {
-		err = setFieldWithType(v, input, "HealthCheckPath", awsstr, ctx)
-		if err != nil {
+		if err = setFieldWithType(v, input, "HealthCheckPath", awsstr, ctx); err != nil {
 			return nil, err
 		}
 		isTargetGroupModified = true
 	}
 	if v := tg.Healthcheckport; v != nil {
-		err = setFieldWithType(v, input, "HealthCheckPort", awsstr, ctx)
-		if err != nil {
+		if err = setFieldWithType(v, input, "HealthCheckPort", awsstr, ctx); err != nil {
 			return nil, err
 		}
 	}
 	if v := tg.Healthcheckprotocol; v != nil {
-		err = setFieldWithType(v, input, "HealthCheckProtocol", awsstr, ctx)
-		if err != nil {
+		if err = setFieldWithType(v, input, "HealthCheckProtocol", awsstr, ctx); err != nil {
 			return nil, err
 		}
 		isTargetGroupModified = true
 	}
 	if v := tg.Healthchecktimeout; v != nil {
-		err = setFieldWithType(v, input, "HealthCheckTimeoutSeconds", awsint64, ctx)
-		if err != nil {
+		if err = setFieldWithType(v, input, "HealthCheckTimeoutSeconds", awsint64, ctx); err != nil {
 			return nil, err
 		}
 		isTargetGroupModified = true
 	}
 	if v := tg.Healthythreshold; v != nil {
-		err = setFieldWithType(v, input, "HealthyThresholdCount", awsint64, ctx)
-		if err != nil {
+		if err = setFieldWithType(v, input, "HealthyThresholdCount", awsint64, ctx); err != nil {
 			return nil, err
 		}
 		isTargetGroupModified = true
 	}
 	if v := tg.Unhealthythreshold; v != nil {
-		err = setFieldWithType(v, input, "UnhealthyThresholdCount", awsint64, ctx)
-		if err != nil {
+		if err = setFieldWithType(v, input, "UnhealthyThresholdCount", awsint64, ctx); err != nil {
 			return nil, err
 		}
 		isTargetGroupModified = true
 	}
 	if v := tg.Matcher; v != nil {
-		err = setFieldWithType(v, input, "Matcher.HttpCode", awsstr, ctx)
-		if err != nil {
+		if err = setFieldWithType(v, input, "Matcher.HttpCode", awsstr, ctx); err != nil {
 			return nil, err
 		}
 		isTargetGroupModified = true
 	}
 
 	if isTargetGroupModified {
-		err = setFieldWithType(tgArn, input, "TargetGroupArn", awsstr, ctx)
-		if err != nil {
+		if err = setFieldWithType(tgArn, input, "TargetGroupArn", awsstr, ctx); err != nil {
 			return nil, err
 		}
 		start := time.Now()
-		var output *elbv2.ModifyTargetGroupOutput
-		output, err = tg.api.ModifyTargetGroup(input)
-		if err != nil {
-			return nil, fmt.Errorf("modify targetgroup: %s", err)
-		}
+		output, err := tg.api.ModifyTargetGroup(input)
 		tg.logger.ExtraVerbosef("elbv2.ModifyTargetGroup call took %s", time.Since(start))
-		tgArn = StringValue(output.TargetGroups[0].TargetGroupArn)
-		tg.logger.Infof("modify targetgroup '%s' done", tgArn)
-
+		return output, err
 	}
+	return nil, nil
+}
 
-	return tgArn, nil
+func (cmd *UpdateTargetgroup) ExtractResult(i interface{}) string {
+	return StringValue(i.(*elbv2.ModifyTargetGroupOutput).TargetGroups[0].TargetGroupArn)
 }
 
 type DeleteTargetgroup struct {

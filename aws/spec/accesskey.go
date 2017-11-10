@@ -54,7 +54,7 @@ func (cmd *CreateAccesskey) AfterRun(ctx map[string]interface{}, output interfac
 
 	if !BoolValue(cmd.NoPrompt) {
 		var yesorno string
-		fmt.Printf("Do you want to save these access keys in %s? (y/n) ", awsdriver.AWSCredFilepath)
+		fmt.Fprintf(os.Stderr, "Do you want to save these access keys in %s? (y/n) ", awsdriver.AWSCredFilepath)
 		fmt.Scanln(&yesorno)
 		if y := strings.TrimSpace(strings.ToLower(yesorno)); y == "y" || y == "yes" {
 			var profile string
@@ -72,9 +72,9 @@ func (cmd *CreateAccesskey) AfterRun(ctx map[string]interface{}, output interfac
 				logger.Errorf("cannot store access keys: %s", err)
 			} else {
 				if created {
-					fmt.Printf("\n\u2713 %s created", awsdriver.AWSCredFilepath)
+					fmt.Fprintf(os.Stderr, "\n\u2713 %s created", awsdriver.AWSCredFilepath)
 				}
-				fmt.Printf("\n\u2713 Credentials for profile '%s' stored successfully in %s\n\n", creds.Profile, awsdriver.AWSCredFilepath)
+				fmt.Fprintf(os.Stderr, "\n\u2713 Credentials for profile '%s' stored successfully in %s\n\n", creds.Profile, awsdriver.AWSCredFilepath)
 			}
 		}
 	}

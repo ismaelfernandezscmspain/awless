@@ -52,7 +52,7 @@ func (cmd *StartContainertask) ValidateType() error {
 		return err
 	}
 	if StringValue(cmd.Type) == "service" && cmd.DeploymentName == nil {
-		return errors.New("missing required param for type=service: 'deployment-name'")
+		return errors.New("missing required param when type=service: 'deployment-name'")
 	}
 	return nil
 }
@@ -104,14 +104,14 @@ func (cmd *StartContainertask) ManualRun(ctx map[string]interface{}) (interface{
 			return nil, err
 		}
 		if len(output.(*ecs.RunTaskOutput).Failures) > 0 {
-			return nil, fmt.Errorf("start containertask: fail to run task: %s", aws.StringValue(output.(*ecs.RunTaskOutput).Failures[0].Reason))
+			return nil, fmt.Errorf("fail to run task: %s", aws.StringValue(output.(*ecs.RunTaskOutput).Failures[0].Reason))
 		}
 		if len(output.(*ecs.RunTaskOutput).Tasks) > 0 {
 			return output, nil
 		}
 		return nil, fmt.Errorf("no task started successfully")
 	}
-	return nil, fmt.Errorf("start containertask: invalid type '%s'", StringValue(cmd.Type))
+	return nil, fmt.Errorf("invalid type '%s'", StringValue(cmd.Type))
 }
 
 func (cmd *StartContainertask) ExtractResult(i interface{}) string {
@@ -144,10 +144,10 @@ func (cmd *StopContainertask) ValidateType() error {
 		return err
 	}
 	if StringValue(cmd.Type) == "service" && cmd.DeploymentName == nil {
-		return errors.New("missing required param for type=service: 'deployment-name'")
+		return errors.New("missing required param when type=service: 'deployment-name'")
 	}
 	if StringValue(cmd.Type) == "task" && cmd.RunArn == nil {
-		return errors.New("missing required param for type=service: 'run-arn'")
+		return errors.New("missing required param when type=service: 'run-arn'")
 	}
 	return nil
 }
@@ -292,10 +292,9 @@ func (cmd *AttachContainertask) ManualRun(ctx map[string]interface{}) (interface
 
 	taskDefOutput, err := cmd.api.RegisterTaskDefinition(taskDefinitionInput)
 	if err != nil {
-		return nil, fmt.Errorf("register task definition: %s", err)
+		return nil, err
 	}
 	cmd.logger.ExtraVerbosef("ecs.RegisterTaskDefinitionOutput call took %s", time.Since(start))
-	cmd.logger.ExtraVerbosef("register task definition '%s' done", aws.StringValue(taskDefOutput.TaskDefinition.Family))
 	return taskDefOutput, nil
 }
 
@@ -351,7 +350,7 @@ func (cmd *DetachContainertask) ManualRun(ctx map[string]interface{}) (interface
 		start := time.Now()
 
 		if _, err := cmd.api.RegisterTaskDefinition(taskDefinitionInput); err != nil {
-			return nil, fmt.Errorf("register task definition: %s", err)
+			return nil, err
 		}
 		cmd.logger.ExtraVerbosef("ecs.RegisterTaskDefinition call took %s", time.Since(start))
 
@@ -363,7 +362,7 @@ func (cmd *DetachContainertask) ManualRun(ctx map[string]interface{}) (interface
 		start := time.Now()
 
 		if _, err := cmd.api.DeregisterTaskDefinition(taskDefinitionInput); err != nil {
-			return nil, fmt.Errorf("deregister task definition: %s", err)
+			return nil, err
 		}
 		cmd.logger.ExtraVerbosef("ecs.DeregisterTaskDefinition call took %s", time.Since(start))
 	}

@@ -31,7 +31,6 @@ import (
 
 type CreateTag struct {
 	_        string `action:"create" entity:"tag" awsAPI:"ec2"` //  awsCall:"CreateTags" awsInput:"ec2.CreateTagsInput" awsOutput:"ec2.CreateTagsOutput"
-	result   string
 	logger   *logger.Logger
 	api      ec2iface.EC2API
 	sess     *session.Session
@@ -84,7 +83,7 @@ func (cmd *CreateTag) ManualRun(ctx map[string]interface{}) (interface{}, error)
 		return nil, err
 	}
 	cmd.logger.ExtraVerbosef("ec2.CreateTags call took %s", time.Since(start))
-	return cmd.result, nil
+	return nil, nil
 }
 
 type DeleteTag struct {
@@ -102,13 +101,13 @@ func (cmd *DeleteTag) ValidateParams(params []string) ([]string, error) {
 
 func (cmd *DeleteTag) DryRun(ctx, params map[string]interface{}) (interface{}, error) {
 	if err := cmd.inject(params); err != nil {
-		return nil, fmt.Errorf("dry run: cannot set params on command struct: %s", err)
+		return nil, fmt.Errorf("cannot set params on command struct: %s", err)
 	}
 
 	input := &ec2.DeleteTagsInput{}
 	input.SetDryRun(true)
 	if err := structInjector(cmd, input, ctx); err != nil {
-		return nil, fmt.Errorf("dry run: cannot inject in ec2.DeleteTagsInput: %s", err)
+		return nil, fmt.Errorf("cannot inject in ec2.DeleteTagsInput: %s", err)
 	}
 	input.Tags = []*ec2.Tag{{Key: cmd.Key, Value: cmd.Value}}
 
@@ -123,7 +122,7 @@ func (cmd *DeleteTag) DryRun(ctx, params map[string]interface{}) (interface{}, e
 		}
 	}
 
-	return nil, fmt.Errorf("dry run: %s", err)
+	return nil, err
 }
 
 func (cmd *DeleteTag) ManualRun(ctx map[string]interface{}) (interface{}, error) {
@@ -134,9 +133,7 @@ func (cmd *DeleteTag) ManualRun(ctx map[string]interface{}) (interface{}, error)
 	input.Tags = []*ec2.Tag{{Key: cmd.Key, Value: cmd.Value}}
 
 	start := time.Now()
-	req, _ := cmd.api.DeleteTagsRequest(input)
-	req.Retryer = createTagRetryer{}
-	err := req.Send()
+	_, err := cmd.api.DeleteTags(input)
 	cmd.logger.ExtraVerbosef("ec2.DeleteTags call took %s", time.Since(start))
 	return nil, err
 }

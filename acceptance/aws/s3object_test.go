@@ -9,7 +9,6 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/wallix/awless/aws/spec"
-	"github.com/wallix/awless/logger"
 )
 
 func TestS3object(t *testing.T) {
@@ -26,16 +25,16 @@ func TestS3object(t *testing.T) {
 		}
 
 		t.Run("with filename", func(t *testing.T) {
-			Template("create s3object name=my-subnet file="+filePath+" bucket=any-bucket acl=public-read").Mock(&s3Mock{
+			Template("create s3object name=my-s3object file="+filePath+" bucket=any-bucket acl=public-read").Mock(&s3Mock{
 				PutObjectFunc: func(input *s3.PutObjectInput) (*s3.PutObjectOutput, error) {
 					return &s3.PutObjectOutput{}, nil
 				}}).
 				ExpectInput("PutObject", &s3.PutObjectInput{
 					ACL:    String("public-read"),
 					Bucket: String("any-bucket"),
-					Key:    String("my-subnet"),
+					Key:    String("my-s3object"),
 					Body:   readSeeker,
-				}).ExpectCommandResult("my-subnet").ExpectCalls("PutObject").Run(t, logger.DefaultLogger)
+				}).ExpectCommandResult("my-s3object").ExpectCalls("PutObject").Run(t)
 		})
 
 		t.Run("no filename", func(t *testing.T) {

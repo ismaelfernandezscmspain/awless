@@ -97,6 +97,6 @@ func TestInstanceprofile(t *testing.T) {
 			},
 		}).ExpectInput("DisassociateIamInstanceProfile", &ec2.DisassociateIamInstanceProfileInput{
 			AssociationId: String("my-assoc-1"),
-		}).ExpectCalls("DescribeIamInstanceProfileAssociations", "DisassociateIamInstanceProfile").Run(t)
+		}).ExpectCommandResult("assoc-id").ExpectCalls("DescribeIamInstanceProfileAssociations", "DisassociateIamInstanceProfile").Run(t)
 	})
 }

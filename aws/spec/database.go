@@ -96,7 +96,8 @@ func (cmd *CheckDatabase) ValidateParams(params []string) ([]string, error) {
 }
 
 func (cmd *CheckDatabase) ValidateState() error {
-	return NewEnumValidator("available",
+	return NewEnumValidator(
+		"available",
 		"backing-up",
 		"creating",
 		"deleting",
