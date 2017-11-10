@@ -299,11 +299,7 @@ func (cmd *{{ $cmdName }}) ValidateCommand(params map[string]interface{}, refs [
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
 	}
-	
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-	
+
 	return
 }
 

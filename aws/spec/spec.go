@@ -31,10 +31,6 @@ type ResultExtractor interface {
 	ExtractResult(interface{}) string
 }
 
-type ManualValidator interface {
-	ManualValidateCommand(params map[string]interface{}, refs []string) []error
-}
-
 type command interface {
 	ParamsHelp() string
 	ValidateParams([]string) ([]string, error)
@@ -50,11 +46,6 @@ func implementsBeforeRun(i interface{}) (BeforeRunner, bool) {
 
 func implementsAfterRun(i interface{}) (AfterRunner, bool) {
 	v, ok := i.(AfterRunner)
-	return v, ok
-}
-
-func implementsManualValidator(i interface{}) (ManualValidator, bool) {
-	v, ok := i.(ManualValidator)
 	return v, ok
 }
 

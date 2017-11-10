@@ -114,10 +114,6 @@ func (cmd *AttachAlarm) ValidateCommand(params map[string]interface{}, refs []st
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -180,10 +176,6 @@ func (cmd *AttachContainertask) ValidateCommand(params map[string]interface{}, r
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -254,10 +246,6 @@ func (cmd *AttachElasticip) ValidateCommand(params map[string]interface{}, refs 
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -355,10 +343,6 @@ func (cmd *AttachInstance) ValidateCommand(params map[string]interface{}, refs [
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -421,10 +405,6 @@ func (cmd *AttachInstanceprofile) ValidateCommand(params map[string]interface{},
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -495,10 +475,6 @@ func (cmd *AttachInternetgateway) ValidateCommand(params map[string]interface{},
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -596,10 +572,6 @@ func (cmd *AttachMfadevice) ValidateCommand(params map[string]interface{}, refs 
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -668,10 +640,6 @@ func (cmd *AttachNetworkinterface) ValidateCommand(params map[string]interface{}
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -763,10 +731,6 @@ func (cmd *AttachPolicy) ValidateCommand(params map[string]interface{}, refs []s
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -837,10 +801,6 @@ func (cmd *AttachRole) ValidateCommand(params map[string]interface{}, refs []str
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -909,10 +869,6 @@ func (cmd *AttachRoutetable) ValidateCommand(params map[string]interface{}, refs
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -1004,10 +960,6 @@ func (cmd *AttachSecuritygroup) ValidateCommand(params map[string]interface{}, r
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -1078,10 +1030,6 @@ func (cmd *AttachUser) ValidateCommand(params map[string]interface{}, refs []str
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -1150,10 +1098,6 @@ func (cmd *AttachVolume) ValidateCommand(params map[string]interface{}, refs []s
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -1245,10 +1189,6 @@ func (cmd *AuthenticateRegistry) ValidateCommand(params map[string]interface{}, 
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -1311,10 +1251,6 @@ func (cmd *CheckCertificate) ValidateCommand(params map[string]interface{}, refs
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -1381,10 +1317,6 @@ func (cmd *CheckDatabase) ValidateCommand(params map[string]interface{}, refs []
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -1447,10 +1379,6 @@ func (cmd *CheckDistribution) ValidateCommand(params map[string]interface{}, ref
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -1517,10 +1445,6 @@ func (cmd *CheckInstance) ValidateCommand(params map[string]interface{}, refs []
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -1583,10 +1507,6 @@ func (cmd *CheckLoadbalancer) ValidateCommand(params map[string]interface{}, ref
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -1653,10 +1573,6 @@ func (cmd *CheckNatgateway) ValidateCommand(params map[string]interface{}, refs 
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -1719,10 +1635,6 @@ func (cmd *CheckNetworkinterface) ValidateCommand(params map[string]interface{},
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -1789,10 +1701,6 @@ func (cmd *CheckScalinggroup) ValidateCommand(params map[string]interface{}, ref
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -1857,10 +1765,6 @@ func (cmd *CheckSecuritygroup) ValidateCommand(params map[string]interface{}, re
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -1923,10 +1827,6 @@ func (cmd *CheckVolume) ValidateCommand(params map[string]interface{}, refs []st
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -1997,10 +1897,6 @@ func (cmd *CopyImage) ValidateCommand(params map[string]interface{}, refs []stri
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -2098,10 +1994,6 @@ func (cmd *CopySnapshot) ValidateCommand(params map[string]interface{}, refs []s
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -2197,10 +2089,6 @@ func (cmd *CreateAccesskey) ValidateCommand(params map[string]interface{}, refs 
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -2269,10 +2157,6 @@ func (cmd *CreateAlarm) ValidateCommand(params map[string]interface{}, refs []st
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -2345,10 +2229,6 @@ func (cmd *CreateAppscalingpolicy) ValidateCommand(params map[string]interface{}
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -2417,10 +2297,6 @@ func (cmd *CreateAppscalingtarget) ValidateCommand(params map[string]interface{}
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -2493,10 +2369,6 @@ func (cmd *CreateBucket) ValidateCommand(params map[string]interface{}, refs []s
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -2559,10 +2431,6 @@ func (cmd *CreateCertificate) ValidateCommand(params map[string]interface{}, ref
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -2635,10 +2503,6 @@ func (cmd *CreateContainercluster) ValidateCommand(params map[string]interface{}
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -2707,10 +2571,6 @@ func (cmd *CreateDatabase) ValidateCommand(params map[string]interface{}, refs [
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -2783,10 +2643,6 @@ func (cmd *CreateDbsubnetgroup) ValidateCommand(params map[string]interface{}, r
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -2849,10 +2705,6 @@ func (cmd *CreateDistribution) ValidateCommand(params map[string]interface{}, re
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -2923,10 +2775,6 @@ func (cmd *CreateElasticip) ValidateCommand(params map[string]interface{}, refs 
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -3024,10 +2872,6 @@ func (cmd *CreateFunction) ValidateCommand(params map[string]interface{}, refs [
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -3098,10 +2942,6 @@ func (cmd *CreateGroup) ValidateCommand(params map[string]interface{}, refs []st
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -3170,10 +3010,6 @@ func (cmd *CreateInstance) ValidateCommand(params map[string]interface{}, refs [
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -3271,10 +3107,6 @@ func (cmd *CreateInstanceprofile) ValidateCommand(params map[string]interface{},
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -3343,10 +3175,6 @@ func (cmd *CreateInternetgateway) ValidateCommand(params map[string]interface{},
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -3444,10 +3272,6 @@ func (cmd *CreateKeypair) ValidateCommand(params map[string]interface{}, refs []
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -3516,10 +3340,6 @@ func (cmd *CreateLaunchconfiguration) ValidateCommand(params map[string]interfac
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -3592,10 +3412,6 @@ func (cmd *CreateListener) ValidateCommand(params map[string]interface{}, refs [
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -3664,10 +3480,6 @@ func (cmd *CreateLoadbalancer) ValidateCommand(params map[string]interface{}, re
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -3740,10 +3552,6 @@ func (cmd *CreateLoginprofile) ValidateCommand(params map[string]interface{}, re
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -3806,10 +3614,6 @@ func (cmd *CreateMfadevice) ValidateCommand(params map[string]interface{}, refs 
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -3882,10 +3686,6 @@ func (cmd *CreateNatgateway) ValidateCommand(params map[string]interface{}, refs
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -3954,10 +3754,6 @@ func (cmd *CreateNetworkinterface) ValidateCommand(params map[string]interface{}
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -4055,10 +3851,6 @@ func (cmd *CreatePolicy) ValidateCommand(params map[string]interface{}, refs []s
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -4129,10 +3921,6 @@ func (cmd *CreateQueue) ValidateCommand(params map[string]interface{}, refs []st
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -4195,10 +3983,6 @@ func (cmd *CreateRecord) ValidateCommand(params map[string]interface{}, refs []s
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -4271,10 +4055,6 @@ func (cmd *CreateRepository) ValidateCommand(params map[string]interface{}, refs
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -4337,10 +4117,6 @@ func (cmd *CreateRole) ValidateCommand(params map[string]interface{}, refs []str
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -4411,10 +4187,6 @@ func (cmd *CreateRoute) ValidateCommand(params map[string]interface{}, refs []st
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -4512,10 +4284,6 @@ func (cmd *CreateRoutetable) ValidateCommand(params map[string]interface{}, refs
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -4605,10 +4373,6 @@ func (cmd *CreateS3object) ValidateCommand(params map[string]interface{}, refs [
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -4677,10 +4441,6 @@ func (cmd *CreateScalinggroup) ValidateCommand(params map[string]interface{}, re
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -4753,10 +4513,6 @@ func (cmd *CreateScalingpolicy) ValidateCommand(params map[string]interface{}, r
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -4825,10 +4581,6 @@ func (cmd *CreateSecuritygroup) ValidateCommand(params map[string]interface{}, r
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -4926,10 +4678,6 @@ func (cmd *CreateSnapshot) ValidateCommand(params map[string]interface{}, refs [
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -5025,10 +4773,6 @@ func (cmd *CreateStack) ValidateCommand(params map[string]interface{}, refs []st
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -5097,10 +4841,6 @@ func (cmd *CreateSubnet) ValidateCommand(params map[string]interface{}, refs []s
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -5198,10 +4938,6 @@ func (cmd *CreateSubscription) ValidateCommand(params map[string]interface{}, re
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -5264,10 +5000,6 @@ func (cmd *CreateTag) ValidateCommand(params map[string]interface{}, refs []stri
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -5340,10 +5072,6 @@ func (cmd *CreateTargetgroup) ValidateCommand(params map[string]interface{}, ref
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -5412,10 +5140,6 @@ func (cmd *CreateTopic) ValidateCommand(params map[string]interface{}, refs []st
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -5488,10 +5212,6 @@ func (cmd *CreateUser) ValidateCommand(params map[string]interface{}, refs []str
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -5560,10 +5280,6 @@ func (cmd *CreateVolume) ValidateCommand(params map[string]interface{}, refs []s
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -5661,10 +5377,6 @@ func (cmd *CreateVpc) ValidateCommand(params map[string]interface{}, refs []stri
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -5760,10 +5472,6 @@ func (cmd *CreateZone) ValidateCommand(params map[string]interface{}, refs []str
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -5832,10 +5540,6 @@ func (cmd *DeleteAccesskey) ValidateCommand(params map[string]interface{}, refs 
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -5908,10 +5612,6 @@ func (cmd *DeleteAlarm) ValidateCommand(params map[string]interface{}, refs []st
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -5980,10 +5680,6 @@ func (cmd *DeleteAppscalingpolicy) ValidateCommand(params map[string]interface{}
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -6056,10 +5752,6 @@ func (cmd *DeleteAppscalingtarget) ValidateCommand(params map[string]interface{}
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -6128,10 +5820,6 @@ func (cmd *DeleteBucket) ValidateCommand(params map[string]interface{}, refs []s
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -6204,10 +5892,6 @@ func (cmd *DeleteCertificate) ValidateCommand(params map[string]interface{}, ref
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -6278,10 +5962,6 @@ func (cmd *DeleteContainercluster) ValidateCommand(params map[string]interface{}
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -6344,10 +6024,6 @@ func (cmd *DeleteContainertask) ValidateCommand(params map[string]interface{}, r
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -6420,10 +6096,6 @@ func (cmd *DeleteDatabase) ValidateCommand(params map[string]interface{}, refs [
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -6494,10 +6166,6 @@ func (cmd *DeleteDbsubnetgroup) ValidateCommand(params map[string]interface{}, r
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -6560,10 +6228,6 @@ func (cmd *DeleteDistribution) ValidateCommand(params map[string]interface{}, re
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -6634,10 +6298,6 @@ func (cmd *DeleteElasticip) ValidateCommand(params map[string]interface{}, refs 
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -6735,10 +6395,6 @@ func (cmd *DeleteFunction) ValidateCommand(params map[string]interface{}, refs [
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -6809,10 +6465,6 @@ func (cmd *DeleteGroup) ValidateCommand(params map[string]interface{}, refs []st
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -6875,10 +6527,6 @@ func (cmd *DeleteImage) ValidateCommand(params map[string]interface{}, refs []st
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -6949,10 +6597,6 @@ func (cmd *DeleteInstance) ValidateCommand(params map[string]interface{}, refs [
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -7050,10 +6694,6 @@ func (cmd *DeleteInstanceprofile) ValidateCommand(params map[string]interface{},
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -7122,10 +6762,6 @@ func (cmd *DeleteInternetgateway) ValidateCommand(params map[string]interface{},
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -7223,10 +6859,6 @@ func (cmd *DeleteKeypair) ValidateCommand(params map[string]interface{}, refs []
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -7322,10 +6954,6 @@ func (cmd *DeleteLaunchconfiguration) ValidateCommand(params map[string]interfac
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -7394,10 +7022,6 @@ func (cmd *DeleteListener) ValidateCommand(params map[string]interface{}, refs [
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -7470,10 +7094,6 @@ func (cmd *DeleteLoadbalancer) ValidateCommand(params map[string]interface{}, re
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -7542,10 +7162,6 @@ func (cmd *DeleteLoginprofile) ValidateCommand(params map[string]interface{}, re
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -7618,10 +7234,6 @@ func (cmd *DeleteMfadevice) ValidateCommand(params map[string]interface{}, refs 
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -7692,10 +7304,6 @@ func (cmd *DeleteNatgateway) ValidateCommand(params map[string]interface{}, refs
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -7764,10 +7372,6 @@ func (cmd *DeleteNetworkinterface) ValidateCommand(params map[string]interface{}
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -7865,10 +7469,6 @@ func (cmd *DeletePolicy) ValidateCommand(params map[string]interface{}, refs []s
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -7939,10 +7539,6 @@ func (cmd *DeleteQueue) ValidateCommand(params map[string]interface{}, refs []st
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -8005,10 +7601,6 @@ func (cmd *DeleteRecord) ValidateCommand(params map[string]interface{}, refs []s
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -8081,10 +7673,6 @@ func (cmd *DeleteRepository) ValidateCommand(params map[string]interface{}, refs
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -8147,10 +7735,6 @@ func (cmd *DeleteRole) ValidateCommand(params map[string]interface{}, refs []str
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -8221,10 +7805,6 @@ func (cmd *DeleteRoute) ValidateCommand(params map[string]interface{}, refs []st
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -8322,10 +7902,6 @@ func (cmd *DeleteRoutetable) ValidateCommand(params map[string]interface{}, refs
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -8421,10 +7997,6 @@ func (cmd *DeleteS3object) ValidateCommand(params map[string]interface{}, refs [
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -8493,10 +8065,6 @@ func (cmd *DeleteScalinggroup) ValidateCommand(params map[string]interface{}, re
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -8569,10 +8137,6 @@ func (cmd *DeleteScalingpolicy) ValidateCommand(params map[string]interface{}, r
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -8641,10 +8205,6 @@ func (cmd *DeleteSecuritygroup) ValidateCommand(params map[string]interface{}, r
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -8742,10 +8302,6 @@ func (cmd *DeleteSnapshot) ValidateCommand(params map[string]interface{}, refs [
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -8841,10 +8397,6 @@ func (cmd *DeleteStack) ValidateCommand(params map[string]interface{}, refs []st
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -8913,10 +8465,6 @@ func (cmd *DeleteSubnet) ValidateCommand(params map[string]interface{}, refs []s
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -9014,10 +8562,6 @@ func (cmd *DeleteSubscription) ValidateCommand(params map[string]interface{}, re
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -9080,10 +8624,6 @@ func (cmd *DeleteTag) ValidateCommand(params map[string]interface{}, refs []stri
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -9156,10 +8696,6 @@ func (cmd *DeleteTargetgroup) ValidateCommand(params map[string]interface{}, ref
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -9228,10 +8764,6 @@ func (cmd *DeleteTopic) ValidateCommand(params map[string]interface{}, refs []st
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -9304,10 +8836,6 @@ func (cmd *DeleteUser) ValidateCommand(params map[string]interface{}, refs []str
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -9376,10 +8904,6 @@ func (cmd *DeleteVolume) ValidateCommand(params map[string]interface{}, refs []s
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -9477,10 +9001,6 @@ func (cmd *DeleteVpc) ValidateCommand(params map[string]interface{}, refs []stri
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -9576,10 +9096,6 @@ func (cmd *DeleteZone) ValidateCommand(params map[string]interface{}, refs []str
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -9644,10 +9160,6 @@ func (cmd *DetachAlarm) ValidateCommand(params map[string]interface{}, refs []st
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -9710,10 +9222,6 @@ func (cmd *DetachContainertask) ValidateCommand(params map[string]interface{}, r
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -9784,10 +9292,6 @@ func (cmd *DetachElasticip) ValidateCommand(params map[string]interface{}, refs 
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -9885,10 +9389,6 @@ func (cmd *DetachInstance) ValidateCommand(params map[string]interface{}, refs [
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -9951,10 +9451,6 @@ func (cmd *DetachInstanceprofile) ValidateCommand(params map[string]interface{},
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -10025,10 +9521,6 @@ func (cmd *DetachInternetgateway) ValidateCommand(params map[string]interface{},
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -10126,10 +9618,6 @@ func (cmd *DetachMfadevice) ValidateCommand(params map[string]interface{}, refs 
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -10194,10 +9682,6 @@ func (cmd *DetachNetworkinterface) ValidateCommand(params map[string]interface{}
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -10260,10 +9744,6 @@ func (cmd *DetachPolicy) ValidateCommand(params map[string]interface{}, refs []s
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -10336,10 +9816,6 @@ func (cmd *DetachRole) ValidateCommand(params map[string]interface{}, refs []str
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -10408,10 +9884,6 @@ func (cmd *DetachRoutetable) ValidateCommand(params map[string]interface{}, refs
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -10503,10 +9975,6 @@ func (cmd *DetachSecuritygroup) ValidateCommand(params map[string]interface{}, r
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -10577,10 +10045,6 @@ func (cmd *DetachUser) ValidateCommand(params map[string]interface{}, refs []str
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -10649,10 +10113,6 @@ func (cmd *DetachVolume) ValidateCommand(params map[string]interface{}, refs []s
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -10750,10 +10210,6 @@ func (cmd *ImportImage) ValidateCommand(params map[string]interface{}, refs []st
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -10849,10 +10305,6 @@ func (cmd *StartAlarm) ValidateCommand(params map[string]interface{}, refs []str
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -10915,10 +10367,6 @@ func (cmd *StartContainertask) ValidateCommand(params map[string]interface{}, re
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -10989,10 +10437,6 @@ func (cmd *StartInstance) ValidateCommand(params map[string]interface{}, refs []
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -11090,10 +10534,6 @@ func (cmd *StopAlarm) ValidateCommand(params map[string]interface{}, refs []stri
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -11156,10 +10596,6 @@ func (cmd *StopContainertask) ValidateCommand(params map[string]interface{}, ref
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -11230,10 +10666,6 @@ func (cmd *StopInstance) ValidateCommand(params map[string]interface{}, refs []s
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -11325,10 +10757,6 @@ func (cmd *UpdateBucket) ValidateCommand(params map[string]interface{}, refs []s
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -11399,10 +10827,6 @@ func (cmd *UpdateContainertask) ValidateCommand(params map[string]interface{}, r
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -11465,10 +10889,6 @@ func (cmd *UpdateDistribution) ValidateCommand(params map[string]interface{}, re
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -11539,10 +10959,6 @@ func (cmd *UpdateInstance) ValidateCommand(params map[string]interface{}, refs [
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -11640,10 +11056,6 @@ func (cmd *UpdateLoginprofile) ValidateCommand(params map[string]interface{}, re
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -11714,10 +11126,6 @@ func (cmd *UpdatePolicy) ValidateCommand(params map[string]interface{}, refs []s
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -11780,10 +11188,6 @@ func (cmd *UpdateRecord) ValidateCommand(params map[string]interface{}, refs []s
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -11856,10 +11260,6 @@ func (cmd *UpdateS3object) ValidateCommand(params map[string]interface{}, refs [
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -11930,10 +11330,6 @@ func (cmd *UpdateScalinggroup) ValidateCommand(params map[string]interface{}, re
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -11996,10 +11392,6 @@ func (cmd *UpdateSecuritygroup) ValidateCommand(params map[string]interface{}, r
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return
@@ -12072,10 +11464,6 @@ func (cmd *UpdateStack) ValidateCommand(params map[string]interface{}, refs []st
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -12146,10 +11534,6 @@ func (cmd *UpdateSubnet) ValidateCommand(params map[string]interface{}, refs []s
 		errs = append(errs, err)
 	}
 
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
-	}
-
 	return
 }
 
@@ -12212,10 +11596,6 @@ func (cmd *UpdateTargetgroup) ValidateCommand(params map[string]interface{}, ref
 	}
 	if err := validateStruct(cmd, refs); err != nil {
 		errs = append(errs, err)
-	}
-
-	if mv, ok := implementsManualValidator(cmd); ok {
-		errs = append(errs, mv.ManualValidateCommand(params, refs)...)
 	}
 
 	return

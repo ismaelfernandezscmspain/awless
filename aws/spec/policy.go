@@ -223,16 +223,6 @@ func (cmd *AttachPolicy) ConvertParams() ([]string, func(values map[string]inter
 		}
 }
 
-func (cmd *AttachPolicy) ManualValidateCommand(params map[string]interface{}, refs []string) (errs []error) {
-	if cmd.User == nil && cmd.Group == nil && cmd.Role == nil {
-		errs = append(errs, fmt.Errorf("missing required field 'user', 'group' or 'role'"))
-	}
-	if cmd.Arn == nil {
-		errs = append(errs, fmt.Errorf("missing required field 'arn'"))
-	}
-	return
-}
-
 func (cmd *AttachPolicy) ManualRun(ctx map[string]interface{}) (interface{}, error) {
 	start := time.Now()
 	switch {
